@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar'
 import { CricketBallCursor } from '@/components/ui/CricketBallCursor'
+import { PageLoader } from '@/components/ui/PageLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${crimsonPro.variable} font-sans antialiased`}>
+        <PageLoader />
         <CricketBallCursor />
         <ScrollProgressBar />
         <Providers>
