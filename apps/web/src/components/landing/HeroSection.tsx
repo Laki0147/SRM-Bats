@@ -4,10 +4,10 @@ import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 
 const stats = [
-  { num: '120', plus: true,  label: 'Pro Players'       },
-  { num: '50k', plus: true,  label: 'Bats Delivered'    },
-  { num: '18',  plus: true,  label: 'Yrs Craftsmanship' },
-  { num: '4.9', plus: false, label: 'Customer Rating'   },
+  { num: '156', unit: 'avg runs', label: 'with our bats'     },
+  { num: '6+',  unit: 'hours',    label: 'knock-in per bat'  },
+  { num: '18+', unit: 'years',    label: 'master craftsmen'  },
+  { num: '2.8', unit: 'lb',       label: 'perfect balance'   },
 ];
 
 export function HeroSection() {
@@ -143,7 +143,7 @@ export function HeroSection() {
           className="font-display font-bold leading-[1.02] mb-5"
           style={{ fontSize: 'clamp(40px,6.8vw,68px)', color: '#f2ebe0', textShadow: '0 2px 28px rgba(22,14,8,.45)', x: smoothCursorX }}
         >
-          {['Premium', 'Cricket Bats,'].map((line, i) => (
+          {['Six Hours', 'of Knocking.'].map((line, i) => (
             <motion.span
               key={line}
               className="block"
@@ -161,7 +161,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.56 }}
           >
-            Crafted for Excellence
+            One Perfect Middle.
           </motion.em>
         </motion.h1>
 
@@ -173,8 +173,8 @@ export function HeroSection() {
           className="font-body text-[15px] leading-[1.8] mb-9 max-w-[420px]"
           style={{ color: 'rgba(228,217,196,.85)', textShadow: '0 1px 8px rgba(22,14,8,.5)' }}
         >
-          Every SRM bat is individually crafted and customised to deliver
-          unmatched performance, balance, and power on the field.
+          Grade 1 English Willow. Hand-selected, air-dried 18 months.
+          Shaped by master craftsmen. Knocked-in and match-ready for your centuries.
         </motion.p>
 
         {/* CTAs */}
@@ -193,7 +193,7 @@ export function HeroSection() {
             onMouseEnter={e => (e.currentTarget.style.background = '#5c3d2e')}
             onMouseLeave={e => (e.currentTarget.style.background = '#8b5e3c')}
           >
-            Shop Collection
+            Find Your Bat
           </motion.a>
           <motion.a
             href="/about"
@@ -204,7 +204,7 @@ export function HeroSection() {
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#c4956a'; e.currentTarget.style.color = '#c4956a'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(232,217,196,.30)'; e.currentTarget.style.color = '#e8d9c4'; }}
           >
-            Explore Our Story
+            Visit Our Workshop
           </motion.a>
         </motion.div>
 
@@ -223,8 +223,9 @@ export function HeroSection() {
               style={{ borderRight: i < stats.length - 1 ? '1px solid rgba(196,149,106,.12)' : 'none' }}
             >
               <div className="font-display text-[26px] font-bold leading-none" style={{ color: '#f2ebe0' }}>
-                {s.num}{s.plus && <span style={{ color: '#c4956a', fontSize: '18px' }}>+</span>}
+                {s.num}
               </div>
+              <div className="font-mono text-[9px] mt-0.5" style={{ color: '#c4956a' }}>{s.unit}</div>
               <div className="font-body text-[10px] mt-1" style={{ color: '#6b6358' }}>{s.label}</div>
             </div>
           ))}
