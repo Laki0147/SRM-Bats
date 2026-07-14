@@ -1,27 +1,32 @@
-import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default withAuth(
-  function middleware(req) {
-    // You can add custom logic here if needed
+// Protected routes that require authentication
+const PROTECTED_ROUTES = [
+  '/checkout',
+  '/account',
+  '/order-confirmation',
+];
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+
+  if (isProtected) {
+    // We cannot access localStorage in middleware — the client-side stores handle
+    // redirect in their own useEffect. Middleware simply passes through.
+    // For server-side enforcement, use a cookie-based token instead.
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
-    pages: {
-      signIn: "/login",
-    },
   }
-);
 
-// Protect these routes
+  return NextResponse.next();
+}
+
 export const config = {
   matcher: [
-    "/profile/:path*",
-    "/dashboard/:path*",
-    "/orders/:path*",
-    "/cart/:path*",
+    '/checkout/:path*',
+    '/account/:path*',
+    '/order-confirmation/:path*',
   ],
 };

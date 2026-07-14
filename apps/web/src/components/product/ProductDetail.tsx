@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Heart, ChevronDown, Star, Shield, Package, Truck, RefreshCw, CheckCircle } from 'lucide-react';
 import type { Product } from '@/lib/products';
+import { useCartStore } from '@/lib/cart-store';
+import { useAuthStore } from '@/lib/auth-store';
 
 // ─── SVG bat illustration (matches site style) ────────────────────────────
 function ProductBatSVG({ fill = '#d2ae72', sideFill = '#aa8848' }: { fill?: string; sideFill?: string }) {
@@ -48,11 +51,16 @@ interface Props {
 }
 
 export function ProductDetail({ product, paletteIndex = 0 }: Props) {
+  const router = useRouter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [addError, setAddError] = useState('');
   const [wishlisted, setWishlisted] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(true);
   const [reviewsOpen, setReviewsOpen] = useState(false);
+
+  const { addItem, openCart } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
 
   const pal = PALETTE[paletteIndex % PALETTE.length];
   const avgRating = product.reviews?.length
@@ -65,8 +73,22 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
   const inStock = product.stock > 0;
 
   const handleAddToCart = async () => {
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    setAddError('');
+    try {
+      await addItem(product.id, qty, {
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: product.price,
+        stock: product.stock,
+        image: product.images?.[0] ?? null,
+      });
+      setAdded(true);
+      openCart();
+      setTimeout(() => setAdded(false), 2000);
+    } catch (err: any) {
+      setAddError(err.message || 'Failed to add to cart');
+    }
   };
 
   return (
@@ -180,6 +202,14 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 {inStock ? `In stock — ${product.stock} available` : 'Out of stock'}
               </span>
             </div>
+
+            {/* Add error */}
+            {addError && (
+              <div className="mb-4 px-4 py-2.5 rounded-[10px] text-[12px] font-medium"
+                style={{ background: 'rgba(155,35,53,.08)', color: '#9b2335', border: '1px solid rgba(155,35,53,.15)' }}>
+                {addError}
+              </div>
+            )}
 
             {/* Quantity + CTA */}
             <div className="flex items-center gap-3 mb-5">

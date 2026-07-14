@@ -1,14 +1,13 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { SiteNavbar } from '@/components/landing/SiteNavbar';
 import { SiteFooter } from '@/components/landing/SiteFooter';
 import { ProductDetail } from '@/components/product/ProductDetail';
-import { notFound } from 'next/navigation';
+import { productsApi } from '@/lib/api';
 import type { Product } from '@/lib/products';
 
-interface Props {
-  params: { slug: string };
-}
-
-// Static product data — used directly until API is live
+// Static fallback data — used if API is unreachable
 const STATIC_PRODUCTS: Record<string, Product> = {
   'the-sovereign': {
     id: 'static-1', slug: 'the-sovereign', name: 'The Sovereign',
@@ -133,15 +132,62 @@ const PALETTE_MAP: Record<string, number> = {
   'the-reserve': 4,   'the-bespoke': 1, 'the-centurion': 2, 'the-maestro': 0,
 };
 
+interface Props {
+  params: { slug: string };
+}
+
 export default function ProductPage({ params }: Props) {
-  const product = STATIC_PRODUCTS[params.slug];
-  if (!product) notFound();
+  const { slug } = params;
+  const [product, setProduct] = useState<Product | null>(STATIC_PRODUCTS[slug] ?? null);
+  const [notFound, setNotFound] = useState(!STATIC_PRODUCTS[slug]);
+
+  useEffect(() => {
+    productsApi.fetchOne(slug).then((data) => {
+      // Normalise API response to match Product type
+      const p: Product = {
+        ...data,
+        // specifications come back as array from API already
+        specifications: Array.isArray(data.specifications) ? data.specifications : [],
+        images: Array.isArray(data.images) ? data.images : [],
+      };
+      setProduct(p);
+      setNotFound(false);
+    }).catch(() => {
+      // Keep static fallback if available; otherwise mark not found
+      if (!STATIC_PRODUCTS[slug]) setNotFound(true);
+    });
+  }, [slug]);
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen" style={{ background: '#faf6f0' }}>
+        <SiteNavbar activePath="/products" />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <p className="font-display text-[24px] font-bold mb-3" style={{ color: '#2c1f14' }}>Product not found</p>
+            <a href="/products" className="font-body text-[13px] underline" style={{ color: '#8b5e3c' }}>
+              Browse all bats
+            </a>
+          </div>
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf6f0' }}>
+        <div className="w-8 h-8 border-2 border-[#8b5e3c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ background: '#faf6f0' }}>
       <SiteNavbar activePath="/products" />
-      <main>
-        <ProductDetail product={product} paletteIndex={PALETTE_MAP[params.slug] ?? 0} />
+      <main className="pt-[68px]">
+        <ProductDetail product={product} paletteIndex={PALETTE_MAP[slug] ?? 0} />
       </main>
       <SiteFooter />
     </div>
