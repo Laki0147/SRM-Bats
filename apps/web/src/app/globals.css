@@ -23,33 +23,17 @@
   --cream:       #faf6f0;
   --warm-white:  #f7f2ea;
 
-  /* Legacy variables kept for existing component compatibility */
-  --color-warm-cream: #f7f2ea;
-  --color-workshop-charcoal: #2c1f14;
-  --color-walnut-brown: #8b5e3c;
-  --color-canvas-beige: #e8d9c4;
-  --color-workshop-green: #6b6358;
-  --color-aged-brass: #c4956a;
-  --color-headings: #2c1f14;
-  --color-body: #6b6358;
-  --color-captions: #a09588;
+  /* Tailwind-compatible RGB values for dynamic opacity */
+  --color-primary: 139 94 60;    /* terracotta */
+  --color-secondary: 196 149 106; /* sand */
+  --color-accent: 107 99 88;     /* stone */
 
-  --color-willow: 139 94 60;
-  --color-leather: 139 94 60;
-  --color-field: 107 99 88;
-  --color-whites: 250 246 240;
-  --color-carbon: 44 31 20;
-
-  --color-primary: 139 94 60;
-  --color-secondary: 196 149 106;
-  --color-accent: 107 99 88;
-
-  --background: 250 246 240;
-  --background-secondary: 232 217 196;
-  --foreground: 44 31 20;
-  --foreground-secondary: 107 99 88;
-  --border: 232 217 196;
-  --shadow: 44 31 20;
+  --background: 242 235 224;     /* parchment #f2ebe0 */
+  --background-secondary: 232 217 196; /* linen */
+  --foreground: 44 31 20;        /* soil */
+  --foreground-secondary: 107 99 88; /* stone */
+  --border: 232 217 196;         /* linen */
+  --shadow: 44 31 20;            /* soil */
 }
 
 /* Dark mode support (optional for future) */
@@ -68,15 +52,14 @@
    ======================================== */
 @layer base {
   body {
-    @apply bg-[#F8F6F1] text-[#5A5753] antialiased;
-    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    @apply bg-[#f2ebe0] text-[#5A5753] antialiased font-body;
     font-feature-settings: 'kern' 1, 'liga' 1;
     overflow-x: hidden;
   }
 
   /* Typography Scale */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-[#2A2825] font-crimson;
+    @apply text-[#2A2825] font-display;
   }
 }
 
