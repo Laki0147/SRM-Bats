@@ -1,0 +1,136 @@
+/**
+ * SRM Bats Color System
+ * Complete CSS custom properties for light and dark modes
+ */
+
+:root {
+  /* Primary Colors */
+  --color-primary-midnight: #0D0D0D;
+  --color-primary-rich: #151515;
+  --color-primary-charcoal: #222222;
+
+  /* Accent Colors */
+  --color-accent-gold: #C89B58;
+  --color-accent-gold-dark: #A57A3D;
+  --color-accent-gold-light: #E8D2A8;
+
+  /* Neutral Colors */
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-warm-white: #F8F6F3;
+  --color-neutral-soft-gray: #E6E6E6;
+  --color-neutral-medium-gray: #8B8B8B;
+  --color-neutral-dark-gray: #4A4A4A;
+
+  /* Status Colors */
+  --color-status-success: #3DBE6C;
+  --color-status-warning: #F6B73C;
+  --color-status-danger: #E04A4A;
+  --color-status-info: #338DFF;
+
+  /* Semantic Tokens - Light Mode */
+  --color-primary: var(--color-primary-midnight);
+  --color-accent: var(--color-accent-gold);
+
+  --color-background-primary: var(--color-neutral-white);
+  --color-background-secondary: var(--color-neutral-warm-white);
+  --color-background-tertiary: var(--color-neutral-soft-gray);
+  --color-background-elevated: var(--color-neutral-white);
+  --color-background-overlay: rgba(13, 13, 13, 0.8);
+
+  --color-text-primary: var(--color-primary-midnight);
+  --color-text-secondary: var(--color-neutral-dark-gray);
+  --color-text-tertiary: var(--color-neutral-medium-gray);
+  --color-text-inverse: var(--color-neutral-white);
+  --color-text-accent: var(--color-accent-gold);
+
+  --color-border-primary: var(--color-neutral-soft-gray);
+  --color-border-secondary: var(--color-neutral-medium-gray);
+  --color-border-accent: var(--color-accent-gold);
+
+  --color-link: var(--color-accent-gold);
+  --color-link-hover: var(--color-accent-gold-dark);
+  --color-link-active: var(--color-accent-gold-dark);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(13, 13, 13, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(13, 13, 13, 0.1), 0 2px 4px -1px rgba(13, 13, 13, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(13, 13, 13, 0.1), 0 4px 6px -2px rgba(13, 13, 13, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(13, 13, 13, 0.1), 0 10px 10px -5px rgba(13, 13, 13, 0.04);
+}
+
+/* Dark Mode */
+.dark,
+[data-theme="dark"] {
+  /* Semantic Tokens - Dark Mode */
+  --color-primary: var(--color-accent-gold);
+  --color-accent: var(--color-accent-gold-light);
+
+  --color-background-primary: var(--color-primary-midnight);
+  --color-background-secondary: var(--color-primary-rich);
+  --color-background-tertiary: var(--color-primary-charcoal);
+  --color-background-elevated: var(--color-primary-rich);
+  --color-background-overlay: rgba(13, 13, 13, 0.95);
+
+  --color-text-primary: var(--color-neutral-white);
+  --color-text-secondary: var(--color-neutral-soft-gray);
+  --color-text-tertiary: var(--color-neutral-medium-gray);
+  --color-text-inverse: var(--color-primary-midnight);
+  --color-text-accent: var(--color-accent-gold-light);
+
+  --color-border-primary: var(--color-primary-charcoal);
+  --color-border-secondary: var(--color-neutral-dark-gray);
+  --color-border-accent: var(--color-accent-gold-light);
+
+  --color-link: var(--color-accent-gold-light);
+  --color-link-hover: var(--color-accent-gold);
+  --color-link-active: var(--color-accent-gold);
+
+  /* Shadows - Enhanced for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Utility Classes */
+.bg-primary { background-color: var(--color-background-primary); }
+.bg-secondary { background-color: var(--color-background-secondary); }
+.bg-tertiary { background-color: var(--color-background-tertiary); }
+.bg-elevated { background-color: var(--color-background-elevated); }
+
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-inverse { color: var(--color-text-inverse); }
+.text-accent { color: var(--color-text-accent); }
+
+.border-primary { border-color: var(--color-border-primary); }
+.border-secondary { border-color: var(--color-border-secondary); }
+.border-accent { border-color: var(--color-border-accent); }
+
+/* Status Utilities */
+.text-success { color: var(--color-status-success); }
+.text-warning { color: var(--color-status-warning); }
+.text-danger { color: var(--color-status-danger); }
+.text-info { color: var(--color-status-info); }
+
+.bg-success { background-color: var(--color-status-success); }
+.bg-warning { background-color: var(--color-status-warning); }
+.bg-danger { background-color: var(--color-status-danger); }
+.bg-info { background-color: var(--color-status-info); }
+
+/* Success variants */
+.bg-success-light { background-color: rgba(61, 190, 108, 0.1); }
+.border-success { border-color: var(--color-status-success); }
+
+/* Warning variants */
+.bg-warning-light { background-color: rgba(246, 183, 60, 0.1); }
+.border-warning { border-color: var(--color-status-warning); }
+
+/* Danger variants */
+.bg-danger-light { background-color: rgba(224, 74, 74, 0.1); }
+.border-danger { border-color: var(--color-status-danger); }
+
+/* Info variants */
+.bg-info-light { background-color: rgba(51, 141, 255, 0.1); }
+.border-info { border-color: var(--color-status-info); }
