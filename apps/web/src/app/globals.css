@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   SRM BATS — HERITAGE DARK DESIGN SYSTEM
+   ========================================== */
+
+/* Cormorant Garamond (display) + DM Sans (body) */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Cormorant+SC:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Brand colour tokens */
+  --soil:        #2c1f14;
+  --bark:        #3d2b1f;
+  --clay:        #5c3d2e;
+  --terracotta:  #8b5e3c;
+  --sand:        #c4956a;
+  --linen:       #e8d9c4;
+  --parchment:   #f2ebe0;
+  --stone:       #6b6358;
+  --ash:         #a09588;
+  --cream:       #faf6f0;
+  --warm-white:  #f7f2ea;
+
+  /* Legacy variables kept for existing component compatibility */
+  --color-warm-cream: #f7f2ea;
+  --color-workshop-charcoal: #2c1f14;
+  --color-walnut-brown: #8b5e3c;
+  --color-canvas-beige: #e8d9c4;
+  --color-workshop-green: #6b6358;
+  --color-aged-brass: #c4956a;
+  --color-headings: #2c1f14;
+  --color-body: #6b6358;
+  --color-captions: #a09588;
+
+  --color-willow: 139 94 60;
+  --color-leather: 139 94 60;
+  --color-field: 107 99 88;
+  --color-whites: 250 246 240;
+  --color-carbon: 44 31 20;
+
+  --color-primary: 139 94 60;
+  --color-secondary: 196 149 106;
+  --color-accent: 107 99 88;
+
+  --background: 250 246 240;
+  --background-secondary: 232 217 196;
+  --foreground: 44 31 20;
+  --foreground-secondary: 107 99 88;
+  --border: 232 217 196;
+  --shadow: 44 31 20;
+}
+
+/* Dark mode support (optional for future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 17 24 39;          /* Gray-900 */
+    --background-secondary: 31 41 55; /* Gray-800 */
+    --foreground: 249 250 251;       /* Gray-50 */
+    --foreground-secondary: 156 163 175; /* Gray-400 */
+    --border: 55 65 81;              /* Gray-700 */
+  }
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+@layer base {
+  body {
+    @apply bg-[#F8F6F1] text-[#5A5753] antialiased;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    overflow-x: hidden;
+  }
+
+  /* Typography Scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-[#2A2825] font-crimson;
+  }
+}
+
+/* ── Smooth scrolling + scroll snap ── */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Custom cricket-ball cursor — hide native on pointer devices ── */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* Section reveal base — used with Framer Motion whileInView */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+/* Prevent layout shift on fixed nav */
+body {
+  overflow-x: hidden;
+}
+
+/* Smooth video rendering */
+video {
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ========================================
+   CRICKET BALL CURSOR
+   ======================================== */
+.cricket-cursor {
+  cursor: pointer;
+}
+
+/* Apply cricket cursor to interactive elements */
+a, button, input[type="button"], input[type="submit"], [role="button"] {
+  cursor: pointer;
+}
+
+/* Note: Custom SVG cursors removed to fix build errors.
+   Cricket cursor effect now handled via cricket-cursor.tsx component */
+
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Dust particles container */
+.dust-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+/* ========================================
+   HERITAGE ATELIER COMPONENTS
+   ======================================== */
+@layer components {
+  /* Premium Button Styles */
+  .btn-primary {
+    @apply inline-flex items-center gap-3 px-8 py-4 bg-[#8B7355] text-white text-[16px] font-medium rounded-lg transition-all;
+    box-shadow: 0 8px 24px rgba(139, 115, 85, 0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 12px 32px rgba(139, 115, 85, 0.35);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-3 px-8 py-4 border-2 border-[#8B7355] text-[#8B7355] text-[16px] font-medium rounded-lg transition-all;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-[#8B7355] text-white;
+  }
+
+  /* Card Styles */
+  .card-premium {
+    @apply bg-[#FAF8F5] rounded-lg p-10;
+    border: 1px solid rgba(139, 115, 85, 0.12);
+    box-shadow: 0 8px 32px rgba(58, 57, 53, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-premium:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(58, 57, 53, 0.12);
+    border-color: rgba(139, 115, 85, 0.24);
+  }
+
+  /* Container Styles */
+  .container-premium {
+    @apply container mx-auto px-8 lg:px-20;
+    max-width: 1400px;
+  }
+
+  /* Section Spacing */
+  .section-spacing {
+    @apply py-32 lg:py-40;
+  }
+
+  /* Text Styles */
+  .text-eyebrow {
+    @apply text-[15px] uppercase tracking-[0.1em] font-medium;
+  }
+
+  .text-display-xl {
+    @apply font-crimson text-[56px] lg:text-[72px] font-bold leading-[1.1] tracking-[-0.02em];
+  }
+
+  .text-display-lg {
+    @apply font-crimson text-[42px] lg:text-[48px] font-semibold leading-[1.2] tracking-[-0.01em];
+  }
+
+  .text-display-md {
+    @apply font-crimson text-[28px] lg:text-[32px] font-semibold leading-[1.3];
+  }
+
+  .text-body-lg {
+    @apply text-[20px] lg:text-[22px] leading-[1.6];
+  }
+
+  .text-body {
+    @apply text-[16px] lg:text-[18px] leading-[1.7];
+  }
+
+  .text-body-sm {
+    @apply text-[14px] lg:text-[15px] leading-[1.6];
+  }
+}
+
+@layer utilities {
+  /* Custom shadows */
+  .shadow-elevated {
+    box-shadow: 0 20px 60px rgba(58, 57, 53, 0.08), 0 8px 24px rgba(58, 57, 53, 0.04);
+  }
+
+  .shadow-subtle {
+    box-shadow: 0 4px 16px rgba(58, 57, 53, 0.03);
+  }
+
+  .shadow-hover {
+    box-shadow: 0 28px 80px rgba(58, 57, 53, 0.12), 0 12px 32px rgba(58, 57, 53, 0.06);
+  }
+
+  /* GPU-accelerated animations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Focus styles */
+  .focus-premium:focus-visible {
+    @apply outline-none ring-2 ring-[#8B7355] ring-offset-2 ring-offset-[#F8F6F1];
+  }
+}
+
+/* Custom selection colors */
+::selection {
+  background-color: rgba(139, 115, 85, 0.2);
+  color: #2a2825;
+}
+
+::-moz-selection {
+  background-color: rgba(139, 115, 85, 0.2);
+  color: #2a2825;
+}
+
+/* Smooth font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent layout shift */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
