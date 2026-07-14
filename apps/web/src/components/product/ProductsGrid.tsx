@@ -1,21 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
+import { productsApi } from '@/lib/api';
+import { useCartStore } from '@/lib/cart-store';
 
-// Static fallback — replaced by real API data when available
+// Static fallback data when API is unavailable
 const STATIC_PRODUCTS = [
-  { id: '1', slug: 'the-sovereign',  name: 'The Sovereign',  grade: 'Grade 1 English Willow', profile: 'Full Bow',      price: 28500, compareAtPrice: 32000, rating: 5, stock: 12, fill: '#d2ae72', sideFill: '#aa8848', label: 'SOV' },
-  { id: '2', slug: 'the-artisan',    name: 'The Artisan',    grade: 'Grade 2 English Willow', profile: 'Mid Bow',       price: 19500, compareAtPrice: 22000, rating: 4, stock: 18, fill: '#c8a060', sideFill: '#a08040', label: 'ART' },
-  { id: '3', slug: 'the-heritage',   name: 'The Heritage',   grade: 'Grade 1 English Willow', profile: 'Low Mid Bow',   price: 24000, compareAtPrice: 27500, rating: 5, stock: 8,  fill: '#dfc07a', sideFill: '#b09050', label: 'HER' },
-  { id: '4', slug: 'the-pioneer',    name: 'The Pioneer',    grade: 'Grade 1 English Willow', profile: 'High Mid Bow',  price: 31000, compareAtPrice: 35000, rating: 5, stock: 6,  fill: '#e0c880', sideFill: '#c0a050', label: 'PIO' },
-  { id: '5', slug: 'the-reserve',    name: 'The Reserve',    grade: 'Grade 2 English Willow', profile: 'Traditional',   price: 13500, compareAtPrice: 16000, rating: 4, stock: 25, fill: '#d4b870', sideFill: '#b09040', label: 'RES' },
-  { id: '6', slug: 'the-bespoke',    name: 'The Bespoke',    grade: 'Grade 1 English Willow', profile: 'Custom',        price: 42000, compareAtPrice: null,  rating: 5, stock: 5,  fill: '#c8a060', sideFill: '#a08040', label: 'BSP' },
-  { id: '7', slug: 'the-centurion',  name: 'The Centurion',  grade: 'Grade 1 English Willow', profile: 'Mid Bow',       price: 26500, compareAtPrice: 30000, rating: 4, stock: 10, fill: '#dfc07a', sideFill: '#b09050', label: 'CEN' },
-  { id: '8', slug: 'the-maestro',    name: 'The Maestro',    grade: 'Grade 1 English Willow', profile: 'Full Bow',      price: 38000, compareAtPrice: 44000, rating: 5, stock: 4,  fill: '#d2ae72', sideFill: '#aa8848', label: 'MAE' },
+  { id: '1', slug: 'the-sovereign',  name: 'The Sovereign',  grade: 'Grade 1 English Willow', profile: 'Full Bow',      price: 28500, compareAtPrice: 32000, rating: 5, stock: 12, fill: '#d2ae72', sideFill: '#aa8848', label: 'SOV', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'Full Bow'}] },
+  { id: '2', slug: 'the-artisan',    name: 'The Artisan',    grade: 'Grade 2 English Willow', profile: 'Mid Bow',       price: 19500, compareAtPrice: 22000, rating: 4, stock: 18, fill: '#c8a060', sideFill: '#a08040', label: 'ART', specifications: [{key:'Willow',value:'Grade 2 English Willow'},{key:'Profile',value:'Mid Bow'}] },
+  { id: '3', slug: 'the-heritage',   name: 'The Heritage',   grade: 'Grade 1 English Willow', profile: 'Low Mid Bow',   price: 24000, compareAtPrice: 27500, rating: 5, stock: 8,  fill: '#dfc07a', sideFill: '#b09050', label: 'HER', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'Low Mid Bow'}] },
+  { id: '4', slug: 'the-pioneer',    name: 'The Pioneer',    grade: 'Grade 1 English Willow', profile: 'High Mid Bow',  price: 31000, compareAtPrice: 35000, rating: 5, stock: 6,  fill: '#e0c880', sideFill: '#c0a050', label: 'PIO', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'High Mid Bow'}] },
+  { id: '5', slug: 'the-reserve',    name: 'The Reserve',    grade: 'Grade 2 English Willow', profile: 'Traditional',   price: 13500, compareAtPrice: 16000, rating: 4, stock: 25, fill: '#d4b870', sideFill: '#b09040', label: 'RES', specifications: [{key:'Willow',value:'Grade 2 English Willow'},{key:'Profile',value:'Traditional'}] },
+  { id: '6', slug: 'the-bespoke',    name: 'The Bespoke',    grade: 'Grade 1 English Willow', profile: 'Custom',        price: 42000, compareAtPrice: null,  rating: 5, stock: 5,  fill: '#c8a060', sideFill: '#a08040', label: 'BSP', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'Custom'}] },
+  { id: '7', slug: 'the-centurion',  name: 'The Centurion',  grade: 'Grade 1 English Willow', profile: 'Mid Bow',       price: 26500, compareAtPrice: 30000, rating: 4, stock: 10, fill: '#dfc07a', sideFill: '#b09050', label: 'CEN', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'Mid Bow'}] },
+  { id: '8', slug: 'the-maestro',    name: 'The Maestro',    grade: 'Grade 1 English Willow', profile: 'Full Bow',      price: 38000, compareAtPrice: 44000, rating: 5, stock: 4,  fill: '#d2ae72', sideFill: '#aa8848', label: 'MAE', specifications: [{key:'Willow',value:'Grade 1 English Willow'},{key:'Profile',value:'Full Bow'}] },
 ];
+
+type ProductItem = typeof STATIC_PRODUCTS[0];
 
 function BatCardSVG({ fill, sideFill, label }: { fill: string; sideFill: string; label: string }) {
   return (
@@ -33,18 +37,33 @@ function BatCardSVG({ fill, sideFill, label }: { fill: string; sideFill: string;
   );
 }
 
-function ProductCard({ p, index }: { p: typeof STATIC_PRODUCTS[0]; index: number }) {
+function ProductCard({ p, index }: { p: ProductItem; index: number }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
+  const { addItem, openCart } = useCartStore();
 
   const discount = p.compareAtPrice
     ? Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100)
     : 0;
 
-  const handleCart = (e: React.MouseEvent) => {
+  const handleCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     setAdding(true);
-    setTimeout(() => setAdding(false), 600);
+    try {
+      await addItem(p.id, 1, {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        price: p.price,
+        stock: p.stock,
+        image: null,
+      });
+      setAdded(true);
+      openCart();
+      setTimeout(() => setAdded(false), 1500);
+    } catch {}
+    finally { setAdding(false); }
   };
 
   return (
@@ -152,12 +171,47 @@ const SORT_OPTIONS = [
 
 export function ProductsGrid() {
   const [sort, setSort] = useState('featured');
+  const [products, setProducts] = useState<ProductItem[]>(STATIC_PRODUCTS);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sorted = [...STATIC_PRODUCTS].sort((a, b) => {
+  useEffect(() => {
+    const fetchFromApi = async () => {
+      setIsLoading(true);
+      try {
+        const data = await productsApi.fetchAll({ limit: 24 });
+        if (data.data && data.data.length > 0) {
+          // Map API products to the card format
+          const mapped: ProductItem[] = data.data.map((p: any, i: number) => ({
+            id: p.id,
+            slug: p.slug,
+            name: p.name,
+            grade: p.specifications?.find((s: any) => s.key === 'Willow')?.value || 'English Willow',
+            profile: p.specifications?.find((s: any) => s.key === 'Profile')?.value || '',
+            price: p.price,
+            compareAtPrice: p.compareAtPrice,
+            rating: 5,
+            stock: p.stock,
+            fill: STATIC_PRODUCTS[i % STATIC_PRODUCTS.length].fill,
+            sideFill: STATIC_PRODUCTS[i % STATIC_PRODUCTS.length].sideFill,
+            label: p.name.split(' ').pop()?.substring(0, 3).toUpperCase() || 'BAT',
+            specifications: p.specifications || [],
+          }));
+          setProducts(mapped);
+        }
+      } catch {
+        // Stay with static fallback
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFromApi();
+  }, []);
+
+  const sorted = [...products].sort((a, b) => {
     if (sort === 'price-asc')  return a.price - b.price;
     if (sort === 'price-desc') return b.price - a.price;
     if (sort === 'name-asc')   return a.name.localeCompare(b.name);
-    return 0; // featured: original order
+    return 0;
   });
 
   return (
