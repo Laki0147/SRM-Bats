@@ -68,7 +68,13 @@ export function HeroSection() {
     <section
       ref={sectionRef}
       className="relative flex w-full items-center overflow-hidden"
-      style={{ height: '100vh', minHeight: 640, background: '#1c140c' }}
+      style={{
+        height: '100vh',
+        minHeight: 640,
+        paddingTop: 140,
+        paddingBottom: 56,
+        background: '#1c140c',
+      }}
     >
       {/* ── VIDEO LAYER (parallax) ── */}
       <motion.div
@@ -131,14 +137,14 @@ export function HeroSection() {
 
       {/* ── CONTENT (parallax + cursor offset) ── */}
       <motion.div
-        className="relative z-10 max-w-[580px] px-6 pt-[68px] lg:px-[52px]"
+        className="relative z-10 max-w-[600px] px-6 lg:px-[52px]"
         style={{ y: smoothContentY, opacity: smoothContentOp, x: smoothCursorX }}
       >
         {/* Headline — letters staggered */}
         <motion.h1
-          className="font-display mb-5 font-bold leading-[1.02]"
+          className="font-display mb-4 font-bold leading-[1.02]"
           style={{
-            fontSize: 'clamp(40px,6.8vw,68px)',
+            fontSize: 'clamp(36px,5.4vw,60px)',
             color: '#f2ebe0',
             textShadow: '0 2px 28px rgba(22,14,8,.45)',
             x: smoothCursorX,
@@ -171,7 +177,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.62 }}
-          className="mb-9 max-w-[420px] font-body text-[15px] leading-[1.8]"
+          className="mb-7 max-w-[420px] font-body text-[15px] leading-[1.8]"
           style={{ color: 'rgba(228,217,196,.85)', textShadow: '0 1px 8px rgba(22,14,8,.5)' }}
         >
           Grade 1 English Willow. Hand-selected, air-dried 18 months. Shaped by master craftsmen.
@@ -183,7 +189,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.74 }}
-          className="mb-14 flex flex-wrap gap-3"
+          className="mb-9 flex flex-wrap gap-3"
         >
           <motion.a
             href="/products"
@@ -266,7 +272,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.7, duration: 1 }}
-        className="absolute bottom-9 left-6 z-10 flex items-center gap-[10px] lg:left-[52px]"
+        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-[10px] [@media(max-height:700px)]:hidden"
         style={{ opacity: smoothContentOp }}
       >
         <motion.div
