@@ -45,7 +45,7 @@ const stats = [
 
 export function ReviewsSection() {
   return (
-    <section className="px-6 py-20 lg:px-[52px]" style={{ background: '#f7f2ea' }}>
+    <section className="px-6 py-20 lg:px-[52px]" style={{ background: '#eed3a8' }}>
       <div className="grid items-start gap-12 lg:grid-cols-[210px_1fr_190px]">
         {/* Left heading */}
         <motion.div
