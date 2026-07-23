@@ -57,7 +57,10 @@ const cardVariants = {
 
 export function CollectionsSection() {
   return (
-    <section className="px-6 py-20 lg:px-[52px]" style={{ background: '#3d2b1f' }}>
+    <section
+      className="px-6 py-20 lg:px-[52px]"
+      style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
+    >
       {/* Header */}
       <motion.div
         className="mb-12 text-center"

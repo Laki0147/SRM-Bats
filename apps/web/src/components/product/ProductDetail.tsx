@@ -278,7 +278,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
             <div className="mb-5 flex items-center gap-3">
               {/* Qty stepper */}
               <div
-                className="flex items-center overflow-hidden rounded-[10px] border"
+                className="flex items-center overflow-hidden rounded-[6px] border"
                 style={{ borderColor: 'rgba(139,94,60,.2)', background: '#f2ebe0' }}
               >
                 <button
@@ -310,7 +310,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 onClick={() => void handleAddToCart()}
                 disabled={!inStock}
                 whileTap={{ scale: 0.97 }}
-                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[10px] font-body text-[14px] font-semibold transition-all duration-200 disabled:opacity-50"
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[6px] font-body text-[14px] font-semibold transition-all duration-200 disabled:opacity-50"
                 style={{ background: added ? '#2d6a4f' : '#2c1f14', color: '#faf6f0' }}
                 aria-label="Add to cart"
               >
@@ -343,7 +343,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
               <button
                 onClick={() => setWishlisted(!wishlisted)}
                 aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                className="flex h-11 w-11 items-center justify-center rounded-[10px] border transition-all"
+                className="flex h-11 w-11 items-center justify-center rounded-[6px] border transition-all"
                 style={{
                   borderColor: 'rgba(139,94,60,.25)',
                   background: wishlisted ? 'rgba(139,94,60,.1)' : 'transparent',

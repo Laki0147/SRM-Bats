@@ -1,12 +1,11 @@
-import { SiteNavbar }       from '@/components/landing/SiteNavbar';
-import { HeroSection }       from '@/components/landing/HeroSection';
-import { FeatureBar }        from '@/components/landing/FeatureBar';
+import { SiteNavbar } from '@/components/landing/SiteNavbar';
+import { HeroSection } from '@/components/landing/HeroSection';
 import { CollectionsSection } from '@/components/landing/CollectionsSection';
 import { BestSellersSection } from '@/components/landing/BestSellersSection';
-import { CraftSection }      from '@/components/landing/CraftSection';
-import { ReviewsSection }    from '@/components/landing/ReviewsSection';
+import { CraftSection } from '@/components/landing/CraftSection';
+import { ReviewsSection } from '@/components/landing/ReviewsSection';
 import { NewsletterSection } from '@/components/landing/NewsletterSection';
-import { SiteFooter }        from '@/components/landing/SiteFooter';
+import { SiteFooter } from '@/components/landing/SiteFooter';
 
 export default function Home() {
   return (
@@ -14,7 +13,6 @@ export default function Home() {
       <SiteNavbar activePath="/" />
       <main>
         <HeroSection />
-        <FeatureBar />
         <CollectionsSection />
         <BestSellersSection />
         <CraftSection />

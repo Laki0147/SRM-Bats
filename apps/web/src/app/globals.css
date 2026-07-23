@@ -324,3 +324,15 @@ img, video {
     scroll-behavior: auto !important;
   }
 }
+
+/* Visible keyboard focus — gold ring reads on the warm dark theme */
+a:focus-visible,
+button:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #c4956a;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

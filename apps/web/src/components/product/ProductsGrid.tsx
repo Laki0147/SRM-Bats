@@ -270,7 +270,7 @@ function ProductCard({ p, index }: { p: ProductItem; index: number }) {
                 setWishlisted(!wishlisted);
               }}
               aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full transition-all"
+              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-[6px] transition-all"
               style={{ background: 'rgba(242,235,224,.92)' }}
             >
               <Heart
@@ -335,7 +335,7 @@ function ProductCard({ p, index }: { p: ProductItem; index: number }) {
               <button
                 onClick={(e) => void handleCart(e)}
                 aria-label="Add to cart"
-                className="flex h-10 w-10 items-center justify-center rounded-[10px] transition-all duration-200"
+                className="flex h-10 w-10 items-center justify-center rounded-[6px] transition-all duration-200"
                 style={{ background: adding ? '#5c3d2e' : '#8b5e3c' }}
                 onMouseEnter={(e) => !adding && (e.currentTarget.style.background = '#5c3d2e')}
                 onMouseLeave={(e) => !adding && (e.currentTarget.style.background = '#8b5e3c')}
@@ -412,7 +412,7 @@ export function ProductsGrid() {
               <button
                 key={opt.value}
                 onClick={() => setSort(opt.value)}
-                className="rounded-full px-3 py-1.5 font-body text-[11px] font-medium transition-all"
+                className="rounded-[6px] px-3 py-1.5 font-body text-[11px] font-medium transition-all"
                 style={{
                   background: sort === opt.value ? '#2c1f14' : 'rgba(139,94,60,.08)',
                   color: sort === opt.value ? '#faf6f0' : '#5c3d2e',

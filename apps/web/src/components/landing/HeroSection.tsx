@@ -1,14 +1,10 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
-const stats = [
-  { num: '156', unit: 'avg runs', label: 'with our bats' },
-  { num: '6+', unit: 'hours', label: 'knock-in per bat' },
-  { num: '18+', unit: 'years', label: 'master craftsmen' },
-  { num: '2.8', unit: 'lb', label: 'perfect balance' },
-];
+// Editorial spec line — real, verifiable craft facts (no invented stats)
+const spec = ['Grade 1 English Willow', 'Air-dried 18 months', 'Hand-knocked 6+ hrs', '2lb 8oz'];
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -35,24 +31,6 @@ export function HeroSection() {
   const smoothVideoY = useSpring(videoY, { stiffness: 80, damping: 20 });
   const smoothContentY = useSpring(contentY, { stiffness: 80, damping: 20 });
   const smoothContentOp = useSpring(contentOp, { stiffness: 80, damping: 20 });
-
-  /* ── cursor parallax on mouse move ── */
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const cursorParallaxX = useTransform(mouseX, [-1, 1], ['-8px', '8px']);
-  const smoothCursorX = useSpring(cursorParallaxX, { stiffness: 60, damping: 18 });
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const onMove = (e: MouseEvent) => {
-      const { left, top, width, height } = section.getBoundingClientRect();
-      mouseX.set(((e.clientX - left) / width - 0.5) * 2);
-      mouseY.set(((e.clientY - top) / height - 0.5) * 2);
-    };
-    section.addEventListener('mousemove', onMove);
-    return () => section.removeEventListener('mousemove', onMove);
-  }, [mouseX, mouseY]);
 
   /* ── slow motion on video load ── */
   useEffect(() => {
@@ -125,20 +103,12 @@ export function HeroSection() {
             linear-gradient(180deg,rgba(22,14,8,.36) 0%,transparent 24%)`,
           }}
         />
-        {/* film-grain texture */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E")`,
-            opacity: 0.5,
-          }}
-        />
       </motion.div>
 
       {/* ── CONTENT (parallax + cursor offset) ── */}
       <motion.div
         className="relative z-10 max-w-[600px] px-6 lg:px-[52px]"
-        style={{ y: smoothContentY, opacity: smoothContentOp, x: smoothCursorX }}
+        style={{ y: smoothContentY, opacity: smoothContentOp }}
       >
         {/* Headline — letters staggered */}
         <motion.h1
@@ -147,7 +117,6 @@ export function HeroSection() {
             fontSize: 'clamp(36px,5.4vw,60px)',
             color: '#f2ebe0',
             textShadow: '0 2px 28px rgba(22,14,8,.45)',
-            x: smoothCursorX,
           }}
         >
           {['Six Hours', 'of Knocking.'].map((line, i) => (
@@ -195,7 +164,7 @@ export function HeroSection() {
             href="/products"
             whileHover={{ y: -2, boxShadow: '0 14px 32px rgba(139,94,60,.45)' }}
             whileTap={{ scale: 0.96 }}
-            className="cursor-pointer rounded-full px-[30px] py-[14px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-colors duration-200"
+            className="cursor-pointer rounded-[6px] px-[30px] py-[14px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-colors duration-200"
             style={{
               background: '#8b5e3c',
               color: '#f2ebe0',
@@ -210,7 +179,7 @@ export function HeroSection() {
             href="/about"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.96 }}
-            className="cursor-pointer rounded-full px-[30px] py-[14px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-all duration-200"
+            className="cursor-pointer rounded-[6px] px-[30px] py-[14px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-all duration-200"
             style={{
               background: 'transparent',
               color: '#e8d9c4',
@@ -229,40 +198,32 @@ export function HeroSection() {
           </motion.a>
         </motion.div>
 
-        {/* Stats bar */}
+        {/* Spec line — editorial, hairline-divided craft facts */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.86 }}
-          className="flex max-w-[480px] overflow-hidden rounded-[20px] border"
-          style={{
-            background: 'rgba(44,31,20,.65)',
-            backdropFilter: 'blur(18px)',
-            WebkitBackdropFilter: 'blur(18px)',
-            borderColor: 'rgba(196,149,106,.18)',
-          }}
+          className="flex flex-wrap items-center gap-x-[14px] gap-y-2 border-t pt-5"
+          style={{ borderColor: 'rgba(196,149,106,.20)', maxWidth: 460 }}
         >
-          {stats.map((s, i) => (
-            <div
-              key={s.label}
-              className="flex-1 px-[14px] py-[17px] text-center"
-              style={{
-                borderRight: i < stats.length - 1 ? '1px solid rgba(196,149,106,.12)' : 'none',
-              }}
-            >
-              <div
-                className="font-stat text-[26px] font-bold leading-none"
-                style={{ color: '#f2ebe0' }}
+          {spec.map((s, i) => (
+            <span key={s} className="flex items-center gap-x-[14px]">
+              <span
+                className="font-sc text-[11px] uppercase tracking-[2px]"
+                style={{ color: '#a09588' }}
               >
-                {s.num}
-              </div>
-              <div className="font-stat mt-0.5 text-[9px]" style={{ color: '#c4956a' }}>
-                {s.unit}
-              </div>
-              <div className="mt-1 font-body text-[10px]" style={{ color: '#6b6358' }}>
-                {s.label}
-              </div>
-            </div>
+                {s}
+              </span>
+              {i < spec.length - 1 && (
+                <span
+                  aria-hidden
+                  className="text-[11px]"
+                  style={{ color: 'rgba(196,149,106,.45)' }}
+                >
+                  ·
+                </span>
+              )}
+            </span>
           ))}
         </motion.div>
       </motion.div>

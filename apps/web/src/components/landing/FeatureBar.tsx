@@ -7,7 +7,7 @@ const features = [
         viewBox="0 0 24 24"
         fill="none"
         className="h-5 w-5"
-        stroke="#8b5e3c"
+        stroke="#c4956a"
         strokeWidth={1.6}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -24,7 +24,7 @@ const features = [
         viewBox="0 0 24 24"
         fill="none"
         className="h-5 w-5"
-        stroke="#8b5e3c"
+        stroke="#c4956a"
         strokeWidth={1.6}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -38,7 +38,7 @@ const features = [
   },
   {
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="#8b5e3c" strokeWidth={1.6}>
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="#c4956a" strokeWidth={1.6}>
         <circle cx="12" cy="12" r="3" />
         <circle cx="12" cy="12" r="7" />
         <line x1="12" y1="2" x2="12" y2="5" />
@@ -56,7 +56,7 @@ const features = [
         viewBox="0 0 24 24"
         fill="none"
         className="h-5 w-5"
-        stroke="#8b5e3c"
+        stroke="#c4956a"
         strokeWidth={1.6}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -74,7 +74,7 @@ export function FeatureBar() {
   return (
     <div
       className="border-b border-t"
-      style={{ background: '#eed3a8', borderColor: 'rgba(196,149,106,.14)' }}
+      style={{ background: '#221711', borderColor: 'rgba(196,149,106,.14)' }}
     >
       <div className="mx-auto grid max-w-[980px] grid-cols-2 lg:grid-cols-4">
         {features.map((f, i) => (
@@ -87,18 +87,18 @@ export function FeatureBar() {
           >
             <div
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]"
-              style={{ background: 'rgba(139,94,60,.09)' }}
+              style={{ background: 'rgba(196,149,106,.14)' }}
             >
               {f.icon}
             </div>
             <div>
               <strong
                 className="mb-[2px] block font-body text-[12px] font-bold"
-                style={{ color: '#2c1f14' }}
+                style={{ color: '#f2ebe0' }}
               >
                 {f.title}
               </strong>
-              <span className="font-body text-[11px]" style={{ color: '#6b6358' }}>
+              <span className="font-body text-[11px]" style={{ color: '#a09588' }}>
                 {f.sub}
               </span>
             </div>

@@ -109,7 +109,7 @@ function ProductCard({ product }: { product: BatProduct }) {
         whileHover={{ y: -4, boxShadow: '0 8px 32px rgba(44,31,20,.14)' }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         className="cursor-pointer overflow-hidden rounded-[18px] border"
-        style={{ background: '#f7f2ea', borderColor: 'rgba(196,149,106,.1)' }}
+        style={{ background: '#3d2b1f', borderColor: 'rgba(196,149,106,.18)' }}
       >
         {/* Image */}
         <div
@@ -129,7 +129,7 @@ function ProductCard({ product }: { product: BatProduct }) {
               setWishlisted(!wishlisted);
             }}
             aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-            className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full transition-all"
+            className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-[6px] transition-all"
             style={{ background: 'rgba(242,235,224,.9)' }}
           >
             <Heart
@@ -150,7 +150,7 @@ function ProductCard({ product }: { product: BatProduct }) {
           </div>
           <h3
             className="font-display mb-2 text-[17px] font-bold leading-[1.2]"
-            style={{ color: '#2c1f14' }}
+            style={{ color: '#f2ebe0' }}
           >
             {product.name}
           </h3>
@@ -159,7 +159,7 @@ function ProductCard({ product }: { product: BatProduct }) {
               <span
                 key={tag}
                 className="rounded-full px-[9px] py-[3px] font-body text-[10px] font-medium"
-                style={{ background: 'rgba(139,94,60,.08)', color: '#5c3d2e' }}
+                style={{ background: 'rgba(196,149,106,.14)', color: '#e8d9c4' }}
               >
                 {tag}
               </span>
@@ -168,9 +168,9 @@ function ProductCard({ product }: { product: BatProduct }) {
           <div className="flex items-center justify-between">
             <div
               className="font-mono text-[16px] font-semibold"
-              style={{ color: '#2c1f14', letterSpacing: '-.5px' }}
+              style={{ color: '#f2ebe0', letterSpacing: '-.5px' }}
             >
-              <span className="font-body text-[12px] font-medium" style={{ color: '#6b6358' }}>
+              <span className="font-body text-[12px] font-medium" style={{ color: '#a09588' }}>
                 ₹
               </span>
               {product.price.toLocaleString('en-IN')}
@@ -179,7 +179,7 @@ function ProductCard({ product }: { product: BatProduct }) {
               onClick={(e) => void handleCart(e)}
               disabled={adding}
               aria-label="Add to cart"
-              className="flex h-9 w-9 items-center justify-center rounded-[8px] transition-all duration-200 disabled:opacity-60"
+              className="flex h-9 w-9 items-center justify-center rounded-[6px] transition-all duration-200 disabled:opacity-60"
               style={{ background: adding ? '#5c3d2e' : '#8b5e3c' }}
               onMouseEnter={(e) => !adding && (e.currentTarget.style.background = '#5c3d2e')}
               onMouseLeave={(e) => !adding && (e.currentTarget.style.background = '#8b5e3c')}
@@ -195,18 +195,21 @@ function ProductCard({ product }: { product: BatProduct }) {
 
 export function BestSellersSection() {
   return (
-    <section className="px-6 py-20 lg:px-[52px]" style={{ background: '#eed3a8' }}>
+    <section
+      className="px-6 py-20 lg:px-[52px]"
+      style={{ background: '#221711', borderTop: '1px solid rgba(196,149,106,.10)' }}
+    >
       <div className="mb-9 flex items-end justify-between">
         <div>
           <small
             className="font-sc mb-[6px] block text-[11px] font-semibold uppercase tracking-[4px]"
-            style={{ color: '#8b5e3c', fontVariant: 'small-caps' }}
+            style={{ color: '#c4956a', fontVariant: 'small-caps' }}
           >
             Top Picks
           </small>
           <h2
             className="font-display text-[34px] font-bold"
-            style={{ color: '#2c1f14', letterSpacing: '-.3px' }}
+            style={{ color: '#f2ebe0', letterSpacing: '-.3px' }}
           >
             Best Sellers
           </h2>
@@ -214,7 +217,7 @@ export function BestSellersSection() {
         <Link
           href="/products"
           className="flex items-center gap-[5px] font-body text-[12px] font-semibold"
-          style={{ color: '#8b5e3c' }}
+          style={{ color: '#c4956a' }}
         >
           View All Products →
         </Link>
