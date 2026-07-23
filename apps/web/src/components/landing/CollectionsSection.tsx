@@ -4,45 +4,22 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Single hero product shot used across all collection cards.
-const COLLECTION_IMAGE = '/bats/main.png';
+const HERO_SHOT = '/bats/main.png';
 
-const collections = [
-  {
-    title: 'English Willow',
-    sub: 'Premium Grade 1',
-    fill: '#d2ae72',
-    sideFill: '#aa8848',
-    label: 'GRADE 1',
-  },
-  {
-    title: 'Kashmir Willow',
-    sub: 'Best for Practice',
-    fill: '#c8a060',
-    sideFill: '#a08040',
-    label: 'KASHMIR',
-  },
-  {
-    title: 'Players Edition',
-    sub: 'For Professionals',
-    fill: '#dfc07a',
-    sideFill: '#b09050',
-    label: 'PLAYERS ED.',
-  },
-  {
-    title: 'Junior Bats',
-    sub: 'Future Champions',
-    fill: '#d4b870',
-    sideFill: '#b09040',
-    label: 'JUNIOR',
-  },
-  {
-    title: "Women's Bats",
-    sub: 'Power. Precision.',
-    fill: '#e0c07a',
-    sideFill: '#c0a050',
-    label: "WOMEN'S",
-  },
+interface Collection {
+  title: string;
+  sub: string;
+  tag: string;
+  // Per-collection imagery; defaults to the hero shot until distinct art exists.
+  image: string;
+}
+
+const collections: Collection[] = [
+  { title: 'English Willow', sub: 'Premium Grade 1', tag: 'Grade 1', image: HERO_SHOT },
+  { title: 'Kashmir Willow', sub: 'Best for Practice', tag: 'Kashmir', image: HERO_SHOT },
+  { title: 'Players Edition', sub: 'For Professionals', tag: 'Pro', image: HERO_SHOT },
+  { title: 'Junior Bats', sub: 'Future Champions', tag: 'Junior', image: HERO_SHOT },
+  { title: "Women's Bats", sub: 'Power. Precision.', tag: "Women's", image: HERO_SHOT },
 ];
 
 const containerVariants = {
@@ -73,16 +50,16 @@ export function CollectionsSection() {
           className="font-sc mb-[10px] block text-[11px] font-semibold uppercase tracking-[4px]"
           style={{ color: '#c4956a', fontVariant: 'small-caps' }}
         >
-          Our Collections
+          By Willow &amp; Player
         </span>
         <h2
           className="font-display text-[38px] font-bold"
           style={{ color: '#f2ebe0', letterSpacing: '-.3px' }}
         >
-          Crafted for Every Player
+          A blade for every hand at the crease.
         </h2>
         <p className="mt-2 font-body text-[13px]" style={{ color: '#a09588' }}>
-          Handcrafted bats, customised for players who demand the best.
+          From first-innings juniors to Grade 1 match blades — each range shaped to its player.
         </p>
       </motion.div>
 
@@ -98,39 +75,43 @@ export function CollectionsSection() {
           <motion.div key={col.title} variants={cardVariants}>
             <Link
               href="/products"
-              className="group relative block cursor-pointer overflow-hidden rounded-[28px]"
-              style={{ aspectRatio: '0.72', background: '#5c3d2e' }}
+              className="group relative block cursor-pointer overflow-hidden rounded-[16px] border"
+              style={{
+                aspectRatio: '0.72',
+                background: '#5c3d2e',
+                borderColor: 'rgba(196,149,106,.16)',
+              }}
             >
-              {/* Bat */}
-              <motion.div
-                className="absolute inset-0"
-                whileHover={{ scale: 1.04, y: -8 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <Image
-                  src={COLLECTION_IMAGE}
-                  alt={col.title}
-                  fill
-                  sizes="(max-width: 1024px) 50vw, 240px"
-                  className="object-cover"
-                />
-              </motion.div>
+              {/* Image — gentle in-frame zoom on hover */}
+              <Image
+                src={col.image}
+                alt={col.title}
+                fill
+                sizes="(max-width: 1024px) 50vw, 240px"
+                className="object-cover transition-transform duration-[650ms] ease-out group-hover:scale-[1.06]"
+              />
 
-              {/* Gradient */}
+              {/* Readability gradient */}
               <div
-                className="absolute inset-0 rounded-[28px]"
+                className="absolute inset-0"
                 style={{
                   background:
                     'linear-gradient(to top,rgba(28,16,8,.92) 0%,rgba(28,16,8,.18) 55%,transparent 100%)',
                 }}
               />
 
-              {/* Hover shine */}
-              <motion.div
-                className="absolute inset-0 rounded-[28px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                style={{
-                  background: 'linear-gradient(135deg,rgba(196,149,106,.06) 0%,transparent 60%)',
-                }}
+              {/* Grade chip — solid accent, top-left */}
+              <span
+                className="font-sc absolute left-3 top-3 rounded-[5px] px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-[1.5px]"
+                style={{ background: '#8b5e3c', color: '#f2ebe0', fontVariant: 'small-caps' }}
+              >
+                {col.tag}
+              </span>
+
+              {/* Gold border warm-up on hover */}
+              <div
+                className="pointer-events-none absolute inset-0 rounded-[16px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{ boxShadow: 'inset 0 0 0 1.5px rgba(196,149,106,.55)' }}
               />
 
               {/* Info */}

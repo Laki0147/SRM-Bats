@@ -13,84 +13,85 @@ interface BatProduct {
   name: string;
   grade: string;
   size: string;
-  spot: string;
+  profile: string;
   price: number;
   rating: number;
-  fill: string;
-  sideFill: string;
-  label: string;
+  reviews: number;
+  // Per-product imagery. Defaults to the hero shot until distinct
+  // photography exists; hoverImage cross-fades in when it differs.
+  image: string;
+  hoverImage: string;
 }
+
+const HERO_SHOT = '/bats/main.png';
 
 const products: BatProduct[] = [
   {
     id: '1',
     name: 'The Sovereign',
-    grade: 'Grade 1 Willow',
-    size: 'Full Size',
-    spot: 'Full Bow',
+    grade: 'Grade 1',
+    size: 'Short Handle',
+    profile: 'Full Bow',
     price: 28500,
-    rating: 5,
-    fill: '#d2ae72',
-    sideFill: '#aa8848',
-    label: 'SOV',
+    rating: 4.9,
+    reviews: 128,
+    image: HERO_SHOT,
+    hoverImage: HERO_SHOT,
     slug: 'the-sovereign',
   },
   {
     id: '2',
     name: 'The Artisan',
-    grade: 'Grade 2 Willow',
-    size: 'Full Size',
-    spot: 'Mid Bow',
+    grade: 'Grade 2',
+    size: 'Short Handle',
+    profile: 'Mid Bow',
     price: 19500,
-    rating: 4,
-    fill: '#c8a060',
-    sideFill: '#a08040',
-    label: 'ART',
+    rating: 4.7,
+    reviews: 86,
+    image: HERO_SHOT,
+    hoverImage: HERO_SHOT,
     slug: 'the-artisan',
   },
   {
     id: '3',
     name: 'The Pioneer',
-    grade: 'Grade 1 Willow',
-    size: 'Full Size',
-    spot: 'High Mid Bow',
+    grade: 'Grade 1',
+    size: 'Short Handle',
+    profile: 'High Mid Bow',
     price: 31000,
-    rating: 5,
-    fill: '#dfc07a',
-    sideFill: '#b09050',
-    label: 'PIO',
+    rating: 5.0,
+    reviews: 64,
+    image: HERO_SHOT,
+    hoverImage: HERO_SHOT,
     slug: 'the-pioneer',
   },
   {
     id: '4',
     name: 'The Heritage',
-    grade: 'Grade 1 Willow',
-    size: 'Full Size',
-    spot: 'Low Mid Bow',
+    grade: 'Grade 1',
+    size: 'Short Handle',
+    profile: 'Low Mid Bow',
     price: 24000,
-    rating: 4,
-    fill: '#e0c880',
-    sideFill: '#c0a050',
-    label: 'HER',
+    rating: 4.8,
+    reviews: 152,
+    image: HERO_SHOT,
+    hoverImage: HERO_SHOT,
     slug: 'the-heritage',
   },
   {
     id: '5',
     name: 'The Maestro',
-    grade: 'Grade 1 Willow',
-    size: 'Full Size',
-    spot: 'Full Bow',
+    grade: 'Grade 1',
+    size: 'Short Handle',
+    profile: 'Full Bow',
     price: 38000,
-    rating: 5,
-    fill: '#d4b870',
-    sideFill: '#b09040',
-    label: 'MAE',
+    rating: 5.0,
+    reviews: 41,
+    image: HERO_SHOT,
+    hoverImage: HERO_SHOT,
     slug: 'the-maestro',
   },
 ];
-
-// Single hero product shot used across all best-seller cards.
-const BEST_SELLER_IMAGE = '/bats/main.png';
 
 function ProductCard({ product }: { product: BatProduct }) {
   const [wishlisted, setWishlisted] = useState(false);
@@ -103,26 +104,48 @@ function ProductCard({ product }: { product: BatProduct }) {
     setAdding(false);
   };
 
+  const distinctHover = product.hoverImage !== product.image;
+
   return (
     <Link href={`/products/${product.slug}`} className="block">
       <motion.div
-        whileHover={{ y: -4, boxShadow: '0 8px 32px rgba(44,31,20,.14)' }}
-        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="cursor-pointer overflow-hidden rounded-[18px] border"
+        whileHover={{
+          y: -5,
+          borderColor: 'rgba(196,149,106,.5)',
+          boxShadow: '0 18px 44px rgba(20,12,6,.5)',
+        }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="group cursor-pointer overflow-hidden rounded-[16px] border"
         style={{ background: '#3d2b1f', borderColor: 'rgba(196,149,106,.18)' }}
       >
-        {/* Image */}
-        <div
-          className="relative flex h-[220px] items-center justify-center"
-          style={{ background: '#1c120a' }}
-        >
+        {/* Image — full-bleed hero shot with gentle in-frame zoom on hover */}
+        <div className="relative h-[220px] overflow-hidden" style={{ background: '#1c120a' }}>
           <Image
-            src={BEST_SELLER_IMAGE}
+            src={product.image}
             alt={product.name}
             fill
             sizes="(max-width: 1024px) 50vw, 300px"
-            className="object-cover"
+            className="object-cover transition-transform duration-[650ms] ease-out group-hover:scale-[1.06]"
           />
+          {/* Cross-fade layer — only meaningful once a distinct hoverImage exists */}
+          {distinctHover && (
+            <Image
+              src={product.hoverImage}
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 50vw, 300px"
+              className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            />
+          )}
+
+          {/* Grade — solid accent chip (dominant in the pill hierarchy) */}
+          <span
+            className="font-sc absolute left-3 top-3 rounded-[5px] px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-[1.5px]"
+            style={{ background: '#8b5e3c', color: '#f2ebe0', fontVariant: 'small-caps' }}
+          >
+            {product.grade}
+          </span>
+
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -140,35 +163,33 @@ function ProductCard({ product }: { product: BatProduct }) {
 
         {/* Body */}
         <div className="p-[14px] pb-[18px]">
-          <div className="mb-2 flex gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3 w-3 ${i < product.rating ? 'fill-[#8b5e3c] text-[#8b5e3c]' : 'text-[#a09588] opacity-35'}`}
-              />
-            ))}
+          {/* Rating figure + count (one gold star, not five muddy ones) */}
+          <div className="mb-2 flex items-center gap-1.5">
+            <Star className="h-3.5 w-3.5 fill-[#c4956a] text-[#c4956a]" />
+            <span className="font-stat text-[12px] font-semibold" style={{ color: '#e8d9c4' }}>
+              {product.rating.toFixed(1)}
+            </span>
+            <span className="font-body text-[11px]" style={{ color: '#a09588' }}>
+              ({product.reviews})
+            </span>
           </div>
+
           <h3
-            className="font-display mb-2 text-[17px] font-bold leading-[1.2]"
+            className="font-display mb-[6px] text-[18px] font-bold leading-[1.2]"
             style={{ color: '#f2ebe0' }}
           >
             {product.name}
           </h3>
-          <div className="mb-3 flex flex-wrap gap-1">
-            {[product.grade, product.size, product.spot].map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full px-[9px] py-[3px] font-body text-[10px] font-medium"
-                style={{ background: 'rgba(196,149,106,.14)', color: '#e8d9c4' }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+
+          {/* Meta — hairline supporting text, subordinate to the grade chip */}
+          <p className="mb-3 font-body text-[11px]" style={{ color: '#a09588' }}>
+            {product.size} · {product.profile}
+          </p>
+
           <div className="flex items-center justify-between">
             <div
-              className="font-mono text-[16px] font-semibold"
-              style={{ color: '#f2ebe0', letterSpacing: '-.5px' }}
+              className="font-display text-[20px] font-semibold"
+              style={{ color: '#f2ebe0', letterSpacing: '-.3px' }}
             >
               <span className="font-body text-[12px] font-medium" style={{ color: '#a09588' }}>
                 ₹
@@ -205,21 +226,21 @@ export function BestSellersSection() {
             className="font-sc mb-[6px] block text-[11px] font-semibold uppercase tracking-[4px]"
             style={{ color: '#c4956a', fontVariant: 'small-caps' }}
           >
-            Top Picks
+            Most Chosen
           </small>
           <h2
             className="font-display text-[34px] font-bold"
             style={{ color: '#f2ebe0', letterSpacing: '-.3px' }}
           >
-            Best Sellers
+            The bats players keep coming back for.
           </h2>
         </div>
         <Link
           href="/products"
-          className="flex items-center gap-[5px] font-body text-[12px] font-semibold"
+          className="flex shrink-0 items-center gap-[5px] font-body text-[12px] font-semibold"
           style={{ color: '#c4956a' }}
         >
-          View All Products →
+          Browse every blade →
         </Link>
       </div>
 
