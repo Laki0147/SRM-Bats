@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Crimson_Pro } from 'next/font/google';
+import { Inter, Crimson_Pro, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
@@ -18,6 +18,12 @@ const crimsonPro = Crimson_Pro({
   style: ['normal', 'italic'],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'SRM Bats - Premium Custom Cricket Bats',
   description:
@@ -28,7 +34,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${crimsonPro.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${crimsonPro.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+      >
         <CricketBallCursor />
         <ScrollProgressBar />
         <Providers>{children}</Providers>

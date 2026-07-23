@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -182,14 +182,35 @@ const config: Config = {
           800: '#22301e',
           900: '#151c13',
         },
+
+        // ── Semantic heritage token layer (single source of truth) ──
+        // Namespaced under `heritage` so it never clobbers the legacy
+        // top-level background/surface keys. Values are the exact current
+        // --soil…--warm-white hexes, so nothing rendered changes.
+        heritage: {
+          background: '#f2ebe0', // parchment
+          surface: '#f7f2ea', // warm-white
+          card: '#faf6f0', // cream
+          gold: '#c4956a', // sand
+          bronze: '#8b5e3c', // terracotta
+          border: '#e8d9c4', // linen
+          cream: '#faf6f0', // cream
+          text: {
+            primary: '#2c1f14', // soil
+            secondary: '#6b6358', // stone
+            muted: '#a09588', // ash
+            dark: '#3d2b1f', // bark
+          },
+        },
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
         crimson: ['var(--font-crimson)', 'serif'],
-        // New design system fonts (loaded via globals.css @import)
+        // display + sc via globals.css @import; body=Inter & stat=Space Grotesk via next/font
         display: ['"Cormorant Garamond"', '"Cormorant"', 'Georgia', 'serif'],
-        body: ['"DM Sans"', '"Inter"', 'system-ui', 'sans-serif'],
+        body: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"DM Mono"', '"Fira Code"', 'monospace'],
+        stat: ['var(--font-space-grotesk)', 'system-ui', 'sans-serif'],
         sc: ['"Cormorant SC"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       spacing: {
@@ -197,23 +218,31 @@ const config: Config = {
         '88': '22rem',
       },
       borderRadius: {
-        'xs': '6px',
-        'sm': '10px',
-        'md': '14px',
-        'lg': '18px',
-        'xl': '24px',
+        xs: '6px',
+        sm: '10px',
+        md: '14px',
+        lg: '18px',
+        xl: '24px',
         '2xl': '32px',
         '3xl': '40px',
+        // Semantic radii (additive)
+        button: '999px',
+        card: '24px',
+        product: '20px',
+        tag: '12px',
       },
       boxShadow: {
-        'soft': '0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.02)',
-        'card': '0 4px 12px rgba(0, 0, 0, 0.04)',
+        soft: '0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.02)',
+        card: '0 4px 12px rgba(0, 0, 0, 0.04)',
         'card-hover': '0 20px 48px rgba(0, 0, 0, 0.12)',
-        'float': '0 8px 24px rgba(0, 0, 0, 0.08)',
-        'premium': '0 12px 32px rgba(0, 0, 0, 0.10), 0 4px 16px rgba(0, 0, 0, 0.06)',
+        float: '0 8px 24px rgba(0, 0, 0, 0.08)',
+        premium: '0 12px 32px rgba(0, 0, 0, 0.10), 0 4px 16px rgba(0, 0, 0, 0.06)',
         'premium-lg': '0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.08)',
-        'gold': '0 8px 24px rgba(212, 165, 116, 0.25), 0 4px 12px rgba(212, 165, 116, 0.15)',
-        'warm': '0 8px 24px rgba(196, 173, 138, 0.20), 0 4px 12px rgba(196, 173, 138, 0.12)',
+        gold: '0 8px 24px rgba(212, 165, 116, 0.25), 0 4px 12px rgba(212, 165, 116, 0.15)',
+        warm: '0 8px 24px rgba(196, 173, 138, 0.20), 0 4px 12px rgba(196, 173, 138, 0.12)',
+        // Semantic elevation tokens (ds- prefix avoids overriding existing shadow-card)
+        'ds-card': '0 10px 30px rgba(0,0,0,.15)',
+        'ds-hero': '0 30px 80px rgba(0,0,0,.45)',
       },
       backgroundImage: {
         'gradient-warm': 'linear-gradient(135deg, #fdfcfa 0%, #f9f7f4 100%)',
@@ -225,9 +254,9 @@ const config: Config = {
         'slide-up': 'slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
         'slide-down': 'slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
         'bounce-slow': 'bounce 3s infinite',
-        'float': 'float 3s ease-in-out infinite',
-        'lift': 'lift 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        'shimmer': 'shimmer 2s infinite',
+        float: 'float 3s ease-in-out infinite',
+        lift: 'lift 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        shimmer: 'shimmer 2s infinite',
       },
       keyframes: {
         fadeIn: {
@@ -258,5 +287,5 @@ const config: Config = {
     },
   },
   plugins: [],
-}
-export default config
+};
+export default config;

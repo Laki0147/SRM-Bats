@@ -251,12 +251,12 @@ export function HeroSection() {
               }}
             >
               <div
-                className="font-display text-[26px] font-bold leading-none"
+                className="font-stat text-[26px] font-bold leading-none"
                 style={{ color: '#f2ebe0' }}
               >
                 {s.num}
               </div>
-              <div className="mt-0.5 font-mono text-[9px]" style={{ color: '#c4956a' }}>
+              <div className="font-stat mt-0.5 text-[9px]" style={{ color: '#c4956a' }}>
                 {s.unit}
               </div>
               <div className="mt-1 font-body text-[10px]" style={{ color: '#6b6358' }}>

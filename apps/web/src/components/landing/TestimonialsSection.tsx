@@ -30,29 +30,29 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="py-32 lg:py-40 bg-white relative overflow-hidden">
+    <section className="relative overflow-hidden bg-white py-32 lg:py-40">
       {/* Paper texture */}
       {/* Texture overlay removed - caused build error */}
 
       <div className="container relative mx-auto px-8 lg:px-20">
         {/* Section Header */}
-        <ScrollAnimationWrapper className="text-center max-w-3xl mx-auto mb-20">
-          <p className="text-[15px] uppercase tracking-[0.1em] text-[#8B7355] font-medium mb-4">
+        <ScrollAnimationWrapper className="mx-auto mb-20 max-w-3xl text-center">
+          <p className="mb-4 text-[15px] font-medium uppercase tracking-[0.1em] text-[#8B7355]">
             Testimonials
           </p>
-          <h2 className="font-crimson text-[42px] lg:text-[48px] font-semibold leading-[1.2] tracking-[-0.01em] text-[#2A2825]">
+          <h2 className="font-crimson text-[42px] font-semibold leading-[1.2] tracking-[-0.01em] text-[#2A2825] lg:text-[48px]">
             Trusted by Players Worldwide
           </h2>
         </ScrollAnimationWrapper>
 
         {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid gap-8 md:grid-cols-3 lg:gap-12">
           {testimonials.map((testimonial, index) => (
             <ScrollAnimationWrapper key={index} delay={index * 0.1}>
               <motion.div
                 whileHover={{ y: -8 }}
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="group relative bg-[#FAF8F5] rounded-lg p-8 lg:p-10 h-full flex flex-col"
+                className="group relative flex h-full flex-col rounded-lg bg-[#FAF8F5] p-8 lg:p-10"
                 style={{
                   border: '1px solid rgba(139, 115, 85, 0.08)',
                   boxShadow: '0 8px 32px rgba(58, 57, 53, 0.06)',
@@ -63,20 +63,20 @@ export function TestimonialsSection() {
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 0.15 }}
                   transition={{ duration: 0.5 }}
-                  className="absolute top-6 right-6"
+                  className="absolute right-6 top-6"
                 >
-                  <Quote className="w-16 h-16 text-[#8B7355]" />
+                  <Quote className="h-16 w-16 text-[#8B7355]" />
                 </motion.div>
 
                 {/* Quote Text */}
-                <blockquote className="font-crimson text-[20px] lg:text-[22px] leading-[1.6] text-[#2A2825] mb-8 flex-1 relative z-10 italic">
+                <blockquote className="font-crimson relative z-10 mb-8 flex-1 text-[20px] italic leading-[1.6] text-[#2A2825] lg:text-[22px]">
                   “{testimonial.quote}”
                 </blockquote>
 
                 {/* Author Info */}
-                <div className="flex items-center gap-4 relative z-10">
+                <div className="relative z-10 flex items-center gap-4">
                   {/* Avatar Placeholder */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#B8956A] to-[#8B7355] flex items-center justify-center text-white font-semibold text-lg">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#B8956A] to-[#8B7355] text-lg font-semibold text-white">
                     {testimonial.author
                       .split(' ')
                       .map((n) => n[0])
@@ -84,15 +84,11 @@ export function TestimonialsSection() {
                   </div>
 
                   <div>
-                    <p className="font-semibold text-[16px] text-[#2A2825] mb-1">
+                    <p className="mb-1 text-[16px] font-semibold text-[#2A2825]">
                       {testimonial.author}
                     </p>
-                    <p className="text-[14px] text-[#8B8781]">
-                      {testimonial.role}
-                    </p>
-                    <p className="text-[13px] text-[#8B8781]">
-                      {testimonial.location}
-                    </p>
+                    <p className="text-[14px] text-[#8B8781]">{testimonial.role}</p>
+                    <p className="text-[13px] text-[#8B8781]">{testimonial.location}</p>
                   </div>
                 </div>
 
@@ -104,7 +100,7 @@ export function TestimonialsSection() {
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.4 }}
-                  className="absolute inset-0 rounded-lg pointer-events-none"
+                  className="pointer-events-none absolute inset-0 rounded-lg"
                   style={{
                     boxShadow: '0 20px 60px rgba(58, 57, 53, 0.12)',
                   }}
@@ -116,7 +112,7 @@ export function TestimonialsSection() {
 
         {/* Stats Bar */}
         <ScrollAnimationWrapper delay={0.3} className="mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 py-12 border-t border-b border-[#E8E3DB]">
+          <div className="grid grid-cols-2 gap-8 border-b border-t border-[#E8E3DB] py-12 md:grid-cols-4 lg:gap-12">
             {[
               { number: '125+', label: 'Years of Heritage' },
               { number: '50,000+', label: 'Bats Crafted' },
@@ -131,12 +127,10 @@ export function TestimonialsSection() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <p className="font-crimson text-[42px] lg:text-[48px] font-semibold text-[#8B7355] mb-2">
+                <p className="font-stat mb-2 text-[42px] font-semibold text-[#8B7355] lg:text-[48px]">
                   {stat.number}
                 </p>
-                <p className="text-[14px] text-[#8B8781] uppercase tracking-wider">
-                  {stat.label}
-                </p>
+                <p className="text-[14px] uppercase tracking-wider text-[#8B8781]">{stat.label}</p>
               </motion.div>
             ))}
           </div>
