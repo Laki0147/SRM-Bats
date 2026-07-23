@@ -205,12 +205,15 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
-        crimson: ['var(--font-crimson)', 'serif'],
-        // display + sc via globals.css @import; body=Inter & stat=Space Grotesk via next/font
+        // One serif everywhere: Cormorant. `crimson` is kept as an alias so any
+        // legacy component still using font-crimson renders the same serif.
+        crimson: ['"Cormorant Garamond"', '"Cormorant"', 'Georgia', 'serif'],
+        // display + sc + mono via globals.css @import; body = Inter via next/font
         display: ['"Cormorant Garamond"', '"Cormorant"', 'Georgia', 'serif'],
         body: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"DM Mono"', '"Fira Code"', 'monospace'],
-        stat: ['var(--font-space-grotesk)', 'system-ui', 'sans-serif'],
+        // Stats read in DM Mono (oldstyle-mono figures) — no more Space Grotesk.
+        stat: ['"DM Mono"', 'ui-monospace', 'monospace'],
         sc: ['"Cormorant SC"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       spacing: {
@@ -225,8 +228,8 @@ const config: Config = {
         xl: '24px',
         '2xl': '32px',
         '3xl': '40px',
-        // Semantic radii (additive)
-        button: '999px',
+        // Semantic radii (additive) — rectangular-with-slight-curve language
+        button: '6px',
         card: '24px',
         product: '20px',
         tag: '12px',
@@ -240,9 +243,9 @@ const config: Config = {
         'premium-lg': '0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.08)',
         gold: '0 8px 24px rgba(212, 165, 116, 0.25), 0 4px 12px rgba(212, 165, 116, 0.15)',
         warm: '0 8px 24px rgba(196, 173, 138, 0.20), 0 4px 12px rgba(196, 173, 138, 0.12)',
-        // Semantic elevation tokens (ds- prefix avoids overriding existing shadow-card)
-        'ds-card': '0 10px 30px rgba(0,0,0,.15)',
-        'ds-hero': '0 30px 80px rgba(0,0,0,.45)',
+        // Semantic elevation tokens — warm-tinted (soil #140c06), never flat black
+        'ds-card': '0 10px 30px rgba(20,12,6,.45)',
+        'ds-hero': '0 30px 80px rgba(20,12,6,.55)',
       },
       backgroundImage: {
         'gradient-warm': 'linear-gradient(135deg, #fdfcfa 0%, #f9f7f4 100%)',

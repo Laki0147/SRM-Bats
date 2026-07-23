@@ -1,26 +1,16 @@
 import type { Metadata } from 'next';
-import { Inter, Crimson_Pro, Space_Grotesk } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
 import { CricketBallCursor } from '@/components/ui/CricketBallCursor';
 
+// One sans (Inter) via next/font. The serif (Cormorant Garamond / SC) and
+// mono (DM Mono) load via the @import in globals.css. Crimson Pro and Space
+// Grotesk were retired — the page now runs on a single serif + one mono.
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
-  display: 'swap',
-});
-
-const crimsonPro = Crimson_Pro({
-  subsets: ['latin'],
-  variable: '--font-crimson',
-  display: 'swap',
-  style: ['normal', 'italic'],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
   display: 'swap',
 });
 
@@ -34,9 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${inter.variable} ${crimsonPro.variable} ${spaceGrotesk.variable} font-sans antialiased`}
-      >
+      <body className={`${inter.variable} font-sans antialiased`}>
         <CricketBallCursor />
         <ScrollProgressBar />
         <Providers>{children}</Providers>
