@@ -49,7 +49,7 @@ export function ReviewsSection() {
   return (
     <section
       className="px-6 py-20 lg:px-[52px]"
-      style={{ background: '#221711', borderTop: '1px solid rgba(196,149,106,.10)' }}
+      style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
     >
       <div className="grid items-start gap-12 lg:grid-cols-[210px_1fr]">
         {/* Left heading */}

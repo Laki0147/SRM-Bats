@@ -17,8 +17,8 @@ const perks = [
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
       </svg>
     ),
-    title: 'Early Access',
-    sub: 'New Collections',
+    title: 'First Pick',
+    sub: 'Of match-grade clefts',
   },
   {
     icon: (
@@ -32,8 +32,8 @@ const perks = [
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     ),
-    title: 'Exclusive Offers',
-    sub: 'Members Only',
+    title: 'Care & Knock-In',
+    sub: 'Guides from the workshop',
   },
   {
     icon: (
@@ -48,8 +48,8 @@ const perks = [
         <polyline points="12 6 12 12 16 14" />
       </svg>
     ),
-    title: 'Expert Tips',
-    sub: 'From the Pros',
+    title: 'Player Stories',
+    sub: 'From the SRM bench',
   },
 ];
 
@@ -74,25 +74,27 @@ export function NewsletterSection() {
             className="font-sc mb-[10px] block text-[11px] font-semibold uppercase tracking-[4px]"
             style={{ color: '#c4956a', fontVariant: 'small-caps' }}
           >
-            Join the SRM Family
+            From the Workbench
           </span>
           <h3
             className="font-display text-[22px] font-bold italic leading-[1.4]"
             style={{ color: '#f2ebe0' }}
           >
-            Exclusive offers, new arrivals &amp; cricket insights.
+            First pick of the bench &mdash; and the know-how to keep it.
           </h3>
         </div>
 
         {/* Form */}
         {submitted ? (
           <div
-            className="rounded-full px-6 py-4 font-body text-[13px] font-semibold"
+            className="rounded-[6px] px-6 py-4 font-body text-[13px] font-semibold"
             style={{
               color: '#c4956a',
               background: 'rgba(196,149,106,.1)',
               border: '1px solid rgba(196,149,106,.2)',
             }}
+            role="status"
+            aria-live="polite"
           >
             ✓ You&apos;re subscribed!
           </div>

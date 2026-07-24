@@ -26,14 +26,10 @@ import Image from 'next/image';
 import type { Product } from '@/lib/products';
 import { useCartStore } from '@/lib/cart-store';
 
-// ─── Real product photography — angle set for the detail gallery ──────────
-const LOCAL_GALLERY = [
-  '/bats/front.png',
-  '/bats/side.png',
-  '/bats/cross.png',
-  '/bats/rear.png',
-  '/bats/air.png',
-];
+// ─── Hero product shot for the dark gallery ────────────────────────────────
+// The white-bg angle cutouts don't read on the dark theme, so we lead with the
+// dark scene shot; real API imagery (product.images) takes precedence when present.
+const LOCAL_GALLERY = ['/bats/main.png'];
 
 // ─── Trust badges ─────────────────────────────────────────────────────────
 const TRUST = [
@@ -94,7 +90,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: '#faf6f0' }}>
+    <div className="min-h-screen" style={{ background: '#2c1f14' }}>
       <div className="mx-auto max-w-[1200px] px-6 py-10 lg:px-12 lg:py-16">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
           {/* ── Left: Gallery ────────────────────────────────────── */}
@@ -105,10 +101,10 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="relative flex items-center justify-center overflow-hidden rounded-[32px]"
               style={{
-                background: '#ffffff',
+                background: '#1c120a',
                 aspectRatio: '0.85',
                 minHeight: 420,
-                border: '1px solid rgba(139,94,60,.12)',
+                border: '1px solid rgba(196,149,106,.18)',
               }}
             >
               <AnimatePresence mode="wait">
@@ -125,7 +121,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                     alt={`${product.name} — view ${activeImg + 1}`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 560px"
-                    className="object-contain p-8"
+                    className="object-cover"
                     priority
                   />
                 </motion.div>
@@ -160,11 +156,11 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                     aria-label={`View ${i + 1}`}
                     className="relative h-16 w-16 overflow-hidden rounded-[12px] border-2 transition-all"
                     style={{
-                      background: '#ffffff',
-                      borderColor: i === activeImg ? '#8b5e3c' : 'rgba(139,94,60,.15)',
+                      background: '#1c120a',
+                      borderColor: i === activeImg ? '#c4956a' : 'rgba(196,149,106,.2)',
                     }}
                   >
-                    <Image src={src} alt="" fill sizes="64px" className="object-contain p-1.5" />
+                    <Image src={src} alt="" fill sizes="64px" className="object-cover" />
                   </button>
                 ))}
               </div>
@@ -190,13 +186,13 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 Products
               </a>
               <span>/</span>
-              <span style={{ color: '#5c3d2e' }}>{product.name}</span>
+              <span style={{ color: '#e8d9c4' }}>{product.name}</span>
             </div>
 
             {/* Category */}
             <span
               className="font-sc mb-3 inline-block text-[11px] font-semibold uppercase tracking-[4px]"
-              style={{ color: '#8b5e3c', fontVariant: 'small-caps' }}
+              style={{ color: '#c4956a', fontVariant: 'small-caps' }}
             >
               {product.category?.name ?? 'Cricket Bat'}
             </span>
@@ -204,7 +200,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
             {/* Name */}
             <h1
               className="font-display mb-3 text-[38px] font-bold leading-[1.1] lg:text-[48px]"
-              style={{ color: '#2c1f14', letterSpacing: '-1px' }}
+              style={{ color: '#f2ebe0', letterSpacing: '-1px' }}
             >
               {product.name}
             </h1>
@@ -215,11 +211,11 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star
                     key={s}
-                    className={`h-4 w-4 ${s <= Math.round(avgRating) ? 'fill-[#8b5e3c] text-[#8b5e3c]' : 'text-[#c4956a] opacity-30'}`}
+                    className={`h-4 w-4 ${s <= Math.round(avgRating) ? 'fill-[#c4956a] text-[#c4956a]' : 'text-[#c4956a] opacity-30'}`}
                   />
                 ))}
               </div>
-              <span className="font-body text-[13px]" style={{ color: '#6b6358' }}>
+              <span className="font-body text-[13px]" style={{ color: '#a09588' }}>
                 {avgRating.toFixed(1)} · {reviewCount} review{reviewCount !== 1 ? 's' : ''}
               </span>
             </div>
@@ -227,16 +223,16 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
             {/* Price */}
             <div className="mb-6 flex items-baseline gap-3">
               <span
-                className="font-mono text-[36px] font-bold"
-                style={{ color: '#2c1f14', letterSpacing: '-1px' }}
+                className="font-display text-[36px] font-bold"
+                style={{ color: '#f2ebe0', letterSpacing: '-1px' }}
               >
-                <span className="font-body text-[20px] font-medium" style={{ color: '#5c3d2e' }}>
+                <span className="font-body text-[20px] font-medium" style={{ color: '#a09588' }}>
                   ₹
                 </span>
                 {product.price.toLocaleString('en-IN')}
               </span>
               {product.compareAtPrice && (
-                <span className="font-mono text-[20px] line-through" style={{ color: '#a09588' }}>
+                <span className="font-mono text-[20px] line-through" style={{ color: '#8a7d6d' }}>
                   ₹{product.compareAtPrice.toLocaleString('en-IN')}
                 </span>
               )}
@@ -244,17 +240,17 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
 
             {/* Description */}
             {product.description && (
-              <p className="mb-8 font-body text-[14px] leading-[1.75]" style={{ color: '#5c3d2e' }}>
+              <p className="mb-8 font-body text-[14px] leading-[1.75]" style={{ color: '#b8ab99' }}>
                 {product.description}
               </p>
             )}
 
             {/* Stock */}
             <div className="mb-6 flex items-center gap-2">
-              <div className={`h-2 w-2 rounded-full ${inStock ? 'bg-green-600' : 'bg-red-400'}`} />
+              <div className={`h-2 w-2 rounded-full ${inStock ? 'bg-[#7aab72]' : 'bg-red-400'}`} />
               <span
                 className="font-body text-[13px] font-medium"
-                style={{ color: inStock ? '#2d6a4f' : '#9b2335' }}
+                style={{ color: inStock ? '#7aab72' : '#d98b8b' }}
               >
                 {inStock ? `In stock — ${product.stock} available` : 'Out of stock'}
               </span>
@@ -279,27 +275,30 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
               {/* Qty stepper */}
               <div
                 className="flex items-center overflow-hidden rounded-[6px] border"
-                style={{ borderColor: 'rgba(139,94,60,.2)', background: '#f2ebe0' }}
+                style={{
+                  borderColor: 'rgba(196,149,106,.25)',
+                  background: 'rgba(255,255,255,.04)',
+                }}
               >
                 <button
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
                   aria-label="Decrease quantity"
-                  className="flex h-11 w-10 items-center justify-center font-mono text-xl transition-colors hover:bg-[rgba(139,94,60,.08)]"
-                  style={{ color: '#5c3d2e' }}
+                  className="flex h-11 w-10 items-center justify-center font-mono text-xl transition-colors hover:bg-[rgba(196,149,106,.12)]"
+                  style={{ color: '#e8d9c4' }}
                 >
                   −
                 </button>
                 <span
                   className="w-10 text-center font-mono text-[15px] font-semibold"
-                  style={{ color: '#2c1f14' }}
+                  style={{ color: '#f2ebe0' }}
                 >
                   {qty}
                 </span>
                 <button
                   onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
                   aria-label="Increase quantity"
-                  className="flex h-11 w-10 items-center justify-center font-mono text-xl transition-colors hover:bg-[rgba(139,94,60,.08)]"
-                  style={{ color: '#5c3d2e' }}
+                  className="flex h-11 w-10 items-center justify-center font-mono text-xl transition-colors hover:bg-[rgba(196,149,106,.12)]"
+                  style={{ color: '#e8d9c4' }}
                 >
                   +
                 </button>
@@ -311,7 +310,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 disabled={!inStock}
                 whileTap={{ scale: 0.97 }}
                 className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[6px] font-body text-[14px] font-semibold transition-all duration-200 disabled:opacity-50"
-                style={{ background: added ? '#2d6a4f' : '#2c1f14', color: '#faf6f0' }}
+                style={{ background: added ? '#2d6a4f' : '#8b5e3c', color: '#faf6f0' }}
                 aria-label="Add to cart"
               >
                 <AnimatePresence mode="wait">
@@ -345,12 +344,12 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                 className="flex h-11 w-11 items-center justify-center rounded-[6px] border transition-all"
                 style={{
-                  borderColor: 'rgba(139,94,60,.25)',
-                  background: wishlisted ? 'rgba(139,94,60,.1)' : 'transparent',
+                  borderColor: 'rgba(196,149,106,.25)',
+                  background: wishlisted ? 'rgba(196,149,106,.14)' : 'transparent',
                 }}
               >
                 <Heart
-                  className={`w-4.5 h-4.5 transition-colors ${wishlisted ? 'fill-[#8b5e3c] text-[#8b5e3c]' : 'text-[#8b5e3c]'}`}
+                  className={`w-4.5 h-4.5 transition-colors ${wishlisted ? 'fill-[#c4956a] text-[#c4956a]' : 'text-[#c4956a]'}`}
                 />
               </button>
             </div>
@@ -363,8 +362,8 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                   className="flex items-center gap-2 rounded-[10px] px-3 py-2.5"
                   style={{ background: 'rgba(196,149,106,.08)' }}
                 >
-                  <Icon className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#8b5e3c' }} />
-                  <span className="font-body text-[11px] font-medium" style={{ color: '#5c3d2e' }}>
+                  <Icon className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#c4956a' }} />
+                  <span className="font-body text-[11px] font-medium" style={{ color: '#e8d9c4' }}>
                     {text}
                   </span>
                 </div>
@@ -375,19 +374,19 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
             {product.specifications?.length > 0 && (
               <div
                 className="mb-3 overflow-hidden rounded-[14px] border"
-                style={{ borderColor: 'rgba(139,94,60,.15)' }}
+                style={{ borderColor: 'rgba(196,149,106,.15)' }}
               >
                 <button
                   onClick={() => setSpecsOpen(!specsOpen)}
                   className="flex w-full items-center justify-between px-5 py-4 font-body text-[13px] font-semibold"
-                  style={{ background: 'rgba(196,149,106,.06)', color: '#2c1f14' }}
+                  style={{ background: 'rgba(196,149,106,.08)', color: '#f2ebe0' }}
                 >
                   Specifications
                   <motion.div
                     animate={{ rotate: specsOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <ChevronDown className="h-4 w-4" style={{ color: '#8b5e3c' }} />
+                    <ChevronDown className="h-4 w-4" style={{ color: '#c4956a' }} />
                   </motion.div>
                 </button>
                 <AnimatePresence initial={false}>
@@ -405,13 +404,13 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                           <div key={spec.id} className="flex items-start justify-between">
                             <span
                               className="font-body text-[12px] font-medium"
-                              style={{ color: '#6b6358' }}
+                              style={{ color: '#a09588' }}
                             >
                               {spec.key}
                             </span>
                             <span
                               className="max-w-[55%] text-right font-body text-[12px] font-semibold"
-                              style={{ color: '#2c1f14' }}
+                              style={{ color: '#e8d9c4' }}
                             >
                               {spec.value}
                             </span>
@@ -428,19 +427,19 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
             {reviewCount > 0 && (
               <div
                 className="overflow-hidden rounded-[14px] border"
-                style={{ borderColor: 'rgba(139,94,60,.15)' }}
+                style={{ borderColor: 'rgba(196,149,106,.15)' }}
               >
                 <button
                   onClick={() => setReviewsOpen(!reviewsOpen)}
                   className="flex w-full items-center justify-between px-5 py-4 font-body text-[13px] font-semibold"
-                  style={{ background: 'rgba(196,149,106,.06)', color: '#2c1f14' }}
+                  style={{ background: 'rgba(196,149,106,.08)', color: '#f2ebe0' }}
                 >
                   Customer Reviews ({reviewCount})
                   <motion.div
                     animate={{ rotate: reviewsOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <ChevronDown className="h-4 w-4" style={{ color: '#8b5e3c' }} />
+                    <ChevronDown className="h-4 w-4" style={{ color: '#c4956a' }} />
                   </motion.div>
                 </button>
                 <AnimatePresence initial={false}>
@@ -453,7 +452,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                       style={{ overflow: 'hidden' }}
                     >
-                      <div className="divide-y" style={{ borderColor: 'rgba(139,94,60,.1)' }}>
+                      <div className="divide-y" style={{ borderColor: 'rgba(196,149,106,.12)' }}>
                         {product.reviews.slice(0, 5).map((r) => (
                           <div key={r.id} className="px-5 py-4">
                             <div className="mb-1 flex items-center gap-2">
@@ -461,13 +460,13 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                                 {[1, 2, 3, 4, 5].map((s) => (
                                   <Star
                                     key={s}
-                                    className={`h-3 w-3 ${s <= r.rating ? 'fill-[#8b5e3c] text-[#8b5e3c]' : 'text-[#c4956a] opacity-25'}`}
+                                    className={`h-3 w-3 ${s <= r.rating ? 'fill-[#c4956a] text-[#c4956a]' : 'text-[#c4956a] opacity-25'}`}
                                   />
                                 ))}
                               </div>
                               <span
                                 className="font-body text-[11px] font-semibold"
-                                style={{ color: '#5c3d2e' }}
+                                style={{ color: '#e8d9c4' }}
                               >
                                 {r.user.firstName ?? 'Customer'}
                               </span>
@@ -483,7 +482,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                             {r.title && (
                               <p
                                 className="mb-1 font-body text-[12px] font-semibold"
-                                style={{ color: '#2c1f14' }}
+                                style={{ color: '#f2ebe0' }}
                               >
                                 {r.title}
                               </p>
@@ -491,7 +490,7 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                             {r.comment && (
                               <p
                                 className="font-body text-[12px] leading-relaxed"
-                                style={{ color: '#6b6358' }}
+                                style={{ color: '#a09588' }}
                               >
                                 {r.comment}
                               </p>

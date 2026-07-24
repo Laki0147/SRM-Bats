@@ -9,17 +9,16 @@ const HERO_SHOT = '/bats/main.png';
 interface Collection {
   title: string;
   sub: string;
-  tag: string;
   // Per-collection imagery; defaults to the hero shot until distinct art exists.
   image: string;
 }
 
 const collections: Collection[] = [
-  { title: 'English Willow', sub: 'Premium Grade 1', tag: 'Grade 1', image: HERO_SHOT },
-  { title: 'Kashmir Willow', sub: 'Best for Practice', tag: 'Kashmir', image: HERO_SHOT },
-  { title: 'Players Edition', sub: 'For Professionals', tag: 'Pro', image: HERO_SHOT },
-  { title: 'Junior Bats', sub: 'Future Champions', tag: 'Junior', image: HERO_SHOT },
-  { title: "Women's Bats", sub: 'Power. Precision.', tag: "Women's", image: HERO_SHOT },
+  { title: 'English Willow', sub: 'Premium Grade 1', image: HERO_SHOT },
+  { title: 'Kashmir Willow', sub: 'Best for Practice', image: HERO_SHOT },
+  { title: 'Players Edition', sub: 'For Professionals', image: HERO_SHOT },
+  { title: 'Junior Bats', sub: 'Future Champions', image: HERO_SHOT },
+  { title: "Women's Bats", sub: 'Power. Precision.', image: HERO_SHOT },
 ];
 
 const containerVariants = {
@@ -99,14 +98,6 @@ export function CollectionsSection() {
                     'linear-gradient(to top,rgba(28,16,8,.92) 0%,rgba(28,16,8,.18) 55%,transparent 100%)',
                 }}
               />
-
-              {/* Grade chip — solid accent, top-left */}
-              <span
-                className="font-sc absolute left-3 top-3 rounded-[5px] px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-[1.5px]"
-                style={{ background: '#8b5e3c', color: '#f2ebe0', fontVariant: 'small-caps' }}
-              >
-                {col.tag}
-              </span>
 
               {/* Gold border warm-up on hover */}
               <div

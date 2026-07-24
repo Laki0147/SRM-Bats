@@ -75,21 +75,32 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
             className="flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-[rgba(196,149,106,0.2)]"
             style={{ background: '#5c3d2e' }}
           >
+            {/* Bat-and-ball monogram */}
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <circle cx="11" cy="8" r="4" stroke="#c4956a" strokeWidth="1.6" />
               <path
-                d="M4 20c0-3.87 3.13-7 7-7s7 3.13 7 7"
+                d="M15.5 4.5 L7.5 12.5"
+                stroke="#c4956a"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M17.2 2.8 L15.5 4.5"
                 stroke="#c4956a"
                 strokeWidth="1.6"
                 strokeLinecap="round"
               />
+              <circle cx="6" cy="15.5" r="2.6" fill="#c4956a" />
+              <path
+                d="M4 15.5c1.3-.9 2.7-.9 4 0"
+                stroke="#2c1f14"
+                strokeWidth=".8"
+                strokeLinecap="round"
+                opacity=".5"
+              />
             </svg>
           </div>
           <div className="leading-tight">
-            <strong
-              className="font-display block text-[20px] font-bold tracking-[2px] text-[#f2ebe0]"
-              style={{ fontVariant: 'small-caps' }}
-            >
+            <strong className="font-sc block text-[22px] font-semibold tracking-[3px] text-[#f2ebe0]">
               SRM
             </strong>
             <small className="block text-[9px] font-semibold uppercase tracking-[5px] text-[#c4956a]">
@@ -104,14 +115,19 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`rounded-[6px] px-[14px] py-[7px] text-[12.5px] font-medium transition-all duration-200 ${
+                className={`group relative px-[12px] py-[7px] text-[13px] font-medium transition-colors duration-200 ${
                   activePath === link.href
-                    ? 'bg-[rgba(196,149,106,0.12)] text-[#c4956a]'
-                    : 'text-[#a09588] hover:bg-[rgba(255,255,255,0.07)] hover:text-[#e8d9c4]'
+                    ? 'text-[#c4956a]'
+                    : 'text-[#a09588] hover:text-[#e8d9c4]'
                 }`}
-                style={{ letterSpacing: '0.3px' }}
+                style={{ letterSpacing: '0.2px' }}
               >
                 {link.label}
+                <span
+                  className={`pointer-events-none absolute inset-x-[12px] -bottom-[1px] h-[1.5px] origin-left rounded-full bg-[#c4956a] transition-transform duration-200 ${
+                    activePath === link.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                />
               </Link>
             </li>
           ))}

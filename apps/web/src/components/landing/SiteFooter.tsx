@@ -32,7 +32,7 @@ const payMethods = ['Visa', 'Mastercard', 'RuPay', 'UPI', 'Paytm'];
 
 export function SiteFooter() {
   return (
-    <footer style={{ background: '#221711', borderTop: '1px solid rgba(196,149,106,.12)' }}>
+    <footer style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.12)' }}>
       <div className="px-6 pt-[60px] lg:px-[52px]">
         <div
           className="grid grid-cols-2 gap-10 border-b pb-12 lg:grid-cols-[230px_1fr_1fr_1fr_170px]"
@@ -45,20 +45,34 @@ export function SiteFooter() {
                 className="flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border"
                 style={{ background: '#5c3d2e', borderColor: 'rgba(196,149,106,.2)' }}
               >
+                {/* Bat-and-ball monogram */}
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <circle cx="11" cy="8" r="4" stroke="#c4956a" strokeWidth="1.6" />
                   <path
-                    d="M4 20c0-3.87 3.13-7 7-7s7 3.13 7 7"
+                    d="M15.5 4.5 L7.5 12.5"
+                    stroke="#c4956a"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M17.2 2.8 L15.5 4.5"
                     stroke="#c4956a"
                     strokeWidth="1.6"
                     strokeLinecap="round"
+                  />
+                  <circle cx="6" cy="15.5" r="2.6" fill="#c4956a" />
+                  <path
+                    d="M4 15.5c1.3-.9 2.7-.9 4 0"
+                    stroke="#2c1f14"
+                    strokeWidth=".8"
+                    strokeLinecap="round"
+                    opacity=".5"
                   />
                 </svg>
               </div>
               <div>
                 <strong
-                  className="font-display block text-[20px] font-bold tracking-[2px]"
-                  style={{ color: '#f2ebe0', fontVariant: 'small-caps' }}
+                  className="font-sc block text-[22px] font-semibold tracking-[3px]"
+                  style={{ color: '#f2ebe0' }}
                 >
                   SRM
                 </strong>

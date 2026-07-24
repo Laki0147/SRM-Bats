@@ -9,7 +9,7 @@ import { SiteFooter } from '@/components/landing/SiteFooter';
 
 export default function Home() {
   return (
-    <div className="min-h-screen" style={{ background: '#1c140c' }}>
+    <div className="min-h-screen" style={{ background: '#2c1f14' }}>
       <SiteNavbar activePath="/" />
       <main>
         <HeroSection />

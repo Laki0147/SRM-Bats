@@ -138,14 +138,6 @@ function ProductCard({ product }: { product: BatProduct }) {
             />
           )}
 
-          {/* Grade — solid accent chip (dominant in the pill hierarchy) */}
-          <span
-            className="font-sc absolute left-3 top-3 rounded-[5px] px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-[1.5px]"
-            style={{ background: '#8b5e3c', color: '#f2ebe0', fontVariant: 'small-caps' }}
-          >
-            {product.grade}
-          </span>
-
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -181,9 +173,9 @@ function ProductCard({ product }: { product: BatProduct }) {
             {product.name}
           </h3>
 
-          {/* Meta — hairline supporting text, subordinate to the grade chip */}
+          {/* Meta — hairline supporting text (grade folded in, no pill) */}
           <p className="mb-3 font-body text-[11px]" style={{ color: '#a09588' }}>
-            {product.size} · {product.profile}
+            {product.grade} · {product.size} · {product.profile}
           </p>
 
           <div className="flex items-center justify-between">
@@ -218,7 +210,7 @@ export function BestSellersSection() {
   return (
     <section
       className="px-6 py-20 lg:px-[52px]"
-      style={{ background: '#221711', borderTop: '1px solid rgba(196,149,106,.10)' }}
+      style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
     >
       <div className="mb-9 flex items-end justify-between">
         <div>
