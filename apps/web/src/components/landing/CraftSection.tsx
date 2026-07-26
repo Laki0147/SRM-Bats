@@ -118,8 +118,10 @@ export function CraftSection() {
   return (
     <section
       className="relative overflow-hidden px-6 py-[104px] lg:px-[52px]"
-      style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
+      style={{ background: '#2c1f14' }}
     >
+      {/* Willow-grain seam — the shop → story transition */}
+      <div className="willow-seam absolute inset-x-0 top-0" aria-hidden />
       <div className="relative z-10 grid items-center gap-16 lg:grid-cols-[300px_1fr] lg:gap-[72px]">
         {/* Left text */}
         <motion.div
@@ -159,8 +161,8 @@ export function CraftSection() {
 
         {/* Transformation timeline */}
         <motion.div
-          className="grid grid-cols-2 overflow-hidden rounded-[20px] border md:grid-cols-5"
-          style={{ background: 'rgba(255,255,255,.03)', borderColor: 'rgba(255,255,255,.07)' }}
+          className="willow-grain grid grid-cols-2 overflow-hidden rounded-[20px] border md:grid-cols-5"
+          style={{ backgroundColor: 'rgba(255,255,255,.03)', borderColor: 'rgba(255,255,255,.07)' }}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-60px' }}

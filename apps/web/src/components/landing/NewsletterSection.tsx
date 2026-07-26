@@ -14,7 +14,8 @@ const perks = [
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        <rect x="6" y="3" width="12" height="18" rx="1.5" />
+        <path d="M10 4v16M14 4v16" opacity=".6" />
       </svg>
     ),
     title: 'First Pick',
@@ -28,8 +29,12 @@ const perks = [
         className="h-[15px] w-[15px]"
         stroke="#c4956a"
         strokeWidth={1.6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        <rect x="5" y="3" width="10" height="6" rx="1.5" />
+        <path d="M10 9v5" />
+        <path d="M7 21l6-6" />
       </svg>
     ),
     title: 'Care & Knock-In',
@@ -43,9 +48,11 @@ const perks = [
         className="h-[15px] w-[15px]"
         stroke="#c4956a"
         strokeWidth={1.6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
+        <path d="M4 5h16v10H9l-4 4V5z" />
+        <path d="M8 9h8M8 12h5" opacity=".6" />
       </svg>
     ),
     title: 'Player Stories',
@@ -77,7 +84,7 @@ export function NewsletterSection() {
             From the Workbench
           </span>
           <h3
-            className="font-display text-[22px] font-bold italic leading-[1.4]"
+            className="font-display text-[22px] font-bold leading-[1.4]"
             style={{ color: '#f2ebe0' }}
           >
             First pick of the bench &mdash; and the know-how to keep it.

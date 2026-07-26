@@ -118,14 +118,14 @@ function ProductCard({ product }: { product: BatProduct }) {
         className="group cursor-pointer overflow-hidden rounded-[16px] border"
         style={{ background: '#3d2b1f', borderColor: 'rgba(196,149,106,.18)' }}
       >
-        {/* Image — full-bleed hero shot with gentle in-frame zoom on hover */}
-        <div className="relative h-[220px] overflow-hidden" style={{ background: '#1c120a' }}>
+        {/* Image — full-bleed hero shot, tall enough to show the whole bat */}
+        <div className="relative h-[300px] overflow-hidden" style={{ background: '#1c120a' }}>
           <Image
             src={product.image}
             alt={product.name}
             fill
             sizes="(max-width: 1024px) 50vw, 300px"
-            className="object-cover transition-transform duration-[650ms] ease-out group-hover:scale-[1.06]"
+            className="object-cover object-center transition-transform duration-[650ms] ease-out group-hover:scale-[1.05]"
           />
           {/* Cross-fade layer — only meaningful once a distinct hoverImage exists */}
           {distinctHover && (
@@ -134,9 +134,17 @@ function ProductCard({ product }: { product: BatProduct }) {
               alt=""
               fill
               sizes="(max-width: 1024px) 50vw, 300px"
-              className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              className="object-cover object-center opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             />
           )}
+          {/* Soft top-down vignette so the shot grounds into the card */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg,rgba(28,18,10,.35) 0%,transparent 22%,transparent 78%,rgba(28,18,10,.45) 100%)',
+            }}
+          />
 
           <button
             onClick={(e) => {

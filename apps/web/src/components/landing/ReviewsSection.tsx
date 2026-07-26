@@ -48,7 +48,7 @@ const initials = (name: string) =>
 export function ReviewsSection() {
   return (
     <section
-      className="px-6 py-20 lg:px-[52px]"
+      className="px-6 py-[96px] lg:px-[52px]"
       style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
     >
       <div className="grid items-start gap-12 lg:grid-cols-[210px_1fr]">
@@ -94,7 +94,7 @@ export function ReviewsSection() {
               variants={cardVariants}
               whileHover={{ y: -10, boxShadow: '0 24px 64px rgba(20,12,6,.45)' }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              className="flex h-full flex-col rounded-[18px] border p-6"
+              className="flex h-full flex-col rounded-[16px] border p-6"
               style={{
                 background: '#3d2b1f',
                 borderColor: 'rgba(196,149,106,.18)',
@@ -106,13 +106,6 @@ export function ReviewsSection() {
                 style={{ color: '#c4956a' }}
               >
                 &quot;
-              </div>
-              <div className="mb-[10px] flex gap-1" role="img" aria-label="Rated 5 out of 5">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <span key={j} aria-hidden className="text-[13px]" style={{ color: '#c4956a' }}>
-                    ★
-                  </span>
-                ))}
               </div>
               <p
                 className="mb-4 flex-1 font-body text-[13px] italic leading-[1.7]"

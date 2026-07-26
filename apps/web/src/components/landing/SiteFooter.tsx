@@ -201,9 +201,21 @@ export function SiteFooter() {
             >
               Payments
             </h4>
-            <p className="mb-4 font-body text-[11px] leading-[2]" style={{ color: '#a09588' }}>
-              {payMethods.join('   ·   ')}
-            </p>
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {payMethods.map((m) => (
+                <span
+                  key={m}
+                  className="font-sc rounded-[5px] px-[7px] py-[3px] text-[9px] font-semibold uppercase tracking-[1px]"
+                  style={{
+                    background: 'rgba(255,255,255,.05)',
+                    color: '#a09588',
+                    border: '1px solid rgba(255,255,255,.08)',
+                  }}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
             <div
               className="flex items-center gap-2 font-body text-[11px]"
               style={{ color: '#8a7d6d' }}

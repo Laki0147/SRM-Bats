@@ -6,8 +6,8 @@
    SRM BATS — HERITAGE DARK DESIGN SYSTEM
    ========================================== */
 
-/* Cormorant Garamond (display) + Cormorant SC (small-caps) + DM Mono (mono).
-   Body=Inter and stat=Space Grotesk are loaded via next/font in layout.tsx. */
+/* Cormorant Garamond (display) + Cormorant SC (small-caps) + DM Mono (mono/stat).
+   Body=Inter is loaded via next/font in layout.tsx. */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Cormorant+SC:wght@500;600;700&family=DM+Mono:wght@400;500;600&display=swap');
 
 :root {
@@ -290,6 +290,36 @@ a, button, input[type="button"], input[type="submit"], [role="button"] {
   .focus-premium:focus-visible {
     @apply outline-none ring-2 ring-[#c4956a] ring-offset-2 ring-offset-[#2c1f14];
   }
+}
+
+/* ========================================
+   WILLOW-GRAIN SIGNATURE
+   The page's one material motif — faint vertical wood-grain, the way it
+   runs the length of a bat. Used sparingly: major section seams + one panel.
+   ======================================== */
+
+/* Section seam — faint vertical grain ticks, softly masked top & bottom so it
+   reads as a textured hairline rather than a hard rule. Two overlaid periods
+   (14px / 28px) keep the spacing from looking mechanical. */
+.willow-seam {
+  height: 12px;
+  width: 100%;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(196, 149, 106, 0.16) 13px 14px),
+    repeating-linear-gradient(90deg, transparent 0 27px, rgba(217, 173, 130, 0.09) 27px 28px);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 50%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 50%, transparent 100%);
+}
+
+/* Panel grain — a whisper of vertical grain for one surface (the craft panel). */
+.willow-grain {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 5px,
+    rgba(196, 149, 106, 0.045) 5px 6px,
+    transparent 6px 11px,
+    rgba(196, 149, 106, 0.022) 11px 12px
+  );
 }
 
 /* Custom selection colors */

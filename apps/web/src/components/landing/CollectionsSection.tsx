@@ -33,10 +33,10 @@ const cardVariants = {
 
 export function CollectionsSection() {
   return (
-    <section
-      className="px-6 py-20 lg:px-[52px]"
-      style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.10)' }}
-    >
+    <section className="relative px-6 py-20 lg:px-[52px]" style={{ background: '#2c1f14' }}>
+      {/* Willow-grain seam — the hero → shop transition */}
+      <div className="willow-seam absolute inset-x-0 top-0" aria-hidden />
+
       {/* Header */}
       <motion.div
         className="mb-12 text-center"
@@ -45,11 +45,15 @@ export function CollectionsSection() {
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <span
-          className="font-sc mb-[10px] block text-[11px] font-semibold uppercase tracking-[4px]"
-          style={{ color: '#c4956a', fontVariant: 'small-caps' }}
-        >
-          By Willow &amp; Player
+        <span className="mb-[10px] flex items-center justify-center gap-3">
+          <span aria-hidden className="h-px w-8" style={{ background: 'rgba(196,149,106,.4)' }} />
+          <span
+            className="font-sc text-[11px] font-semibold uppercase tracking-[4px]"
+            style={{ color: '#c4956a', fontVariant: 'small-caps' }}
+          >
+            By Willow &amp; Player
+          </span>
+          <span aria-hidden className="h-px w-8" style={{ background: 'rgba(196,149,106,.4)' }} />
         </span>
         <h2
           className="font-display text-[38px] font-bold"
@@ -108,7 +112,7 @@ export function CollectionsSection() {
               {/* Info */}
               <div className="absolute bottom-0 left-0 right-0 p-[18px]">
                 <h3
-                  className="font-display mb-[1px] text-[17px] font-bold italic"
+                  className="font-display mb-[1px] text-[17px] font-bold"
                   style={{ color: '#f2ebe0' }}
                 >
                   {col.title}
