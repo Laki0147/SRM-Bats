@@ -4,6 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
 import { CricketBallCursor } from '@/components/ui/CricketBallCursor';
+import { VariantSwitcher } from '@/components/VariantSwitcher';
 
 // One sans (Inter) via next/font. The serif (Cormorant Garamond / SC) and
 // mono (DM Mono) load via the @import in globals.css. Crimson Pro and Space
@@ -27,7 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} font-sans antialiased`}>
         <CricketBallCursor />
         <ScrollProgressBar />
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <VariantSwitcher />
+        </Providers>
       </body>
     </html>
   );

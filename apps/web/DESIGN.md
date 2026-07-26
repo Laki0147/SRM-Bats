@@ -76,6 +76,24 @@ The **willow-grain** motif (`.willow-seam`, `.willow-grain`) — faint vertical 
 
 ---
 
+## Live variant switch (Heritage ⇄ Atelier)
+
+A floating **VariantSwitcher** (bottom-right, on every route) toggles between two
+complete visual worlds so they can be compared on the running site:
+
+- **Heritage** — the original warm, cinematic, serif look. Default; unchanged.
+- **Atelier** — a new editorial _specimen_ world: light paper + ink, a single
+  cricket-leather **oxblood** accent (`#9e3324`), heavy Inter display, DM Mono
+  spec-sheet data, hairline grid, each bat catalogued like a specimen.
+
+Mechanics: `lib/design-variant.tsx` (context, persisted to `localStorage`,
+mirrored to `<html data-variant>`, SSR-safe — defaults to Heritage so first
+paint never flashes for the common case). The **home** renders fully in the
+active variant via `components/home/HomeExperience.tsx`; the Atelier world lives
+in `components/v2/AtelierHome.tsx` and reuses the real product facts, copy,
+assets, and the auth/cart stores — **no business logic changed**. Other routes
+currently fall back to Heritage; extend by adding variant branches per surface.
+
 ## Roadmap (optional, prioritized — not yet done)
 
 Deeper work worth a dedicated pass, each verifiable per-surface:
