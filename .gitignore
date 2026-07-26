@@ -59,3 +59,9 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# Local tooling / agent scaffolding (not project source)
+.claude/
+.agents/
+.bob/
+skills-lock.json
