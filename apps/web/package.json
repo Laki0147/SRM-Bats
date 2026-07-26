@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node ../../scripts/gen-dev-docs.mjs",
     "dev": "next dev",
+    "prebuild": "node ../../scripts/gen-dev-docs.mjs",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
