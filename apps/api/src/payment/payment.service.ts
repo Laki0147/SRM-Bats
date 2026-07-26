@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as crypto from 'crypto';
 
@@ -26,7 +27,8 @@ export class PaymentService {
     // amount is in rupees; Razorpay requires paise (minimum 100 paise = ₹1)
     const amountInPaise = Math.round(amount * 100);
     if (amountInPaise < 100) {
-      throw new InternalServerErrorException('Minimum order amount is ₹1 (100 paise)');
+      // client-side validation error → 400, not 500
+      throw new BadRequestException('Minimum order amount is ₹1 (100 paise)');
     }
 
     const body = JSON.stringify({
@@ -47,8 +49,13 @@ export class PaymentService {
     });
 
     if (!response.ok) {
-      const err = await response.json() as any;
-      throw new InternalServerErrorException(err?.error?.description || 'Razorpay order creation failed');
+      const err = (await response.json()) as { error?: { description?: string } };
+      const description = err.error?.description || 'Razorpay order creation failed';
+      // Razorpay rejected our key/secret → surface as an auth failure
+      if (response.status === 401) {
+        throw new UnauthorizedException(`Razorpay authentication failed: ${description}`);
+      }
+      throw new InternalServerErrorException(description);
     }
 
     return response.json();
@@ -60,7 +67,7 @@ export class PaymentService {
   verifyPaymentSignature(
     razorpayOrderId: string,
     razorpayPaymentId: string,
-    razorpaySignature: string,
+    razorpaySignature: string
   ): boolean {
     const hmac = crypto.createHmac('sha256', this.keySecret);
     hmac.update(`${razorpayOrderId}|${razorpayPaymentId}`);

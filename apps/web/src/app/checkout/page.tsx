@@ -219,11 +219,26 @@ export default function CheckoutPage() {
                 razorpaySignature: response.razorpay_signature,
               });
 
-              // 4. Create order in DB
-              const shippingAddr = { ...activeAddress, type: 'SHIPPING' };
-              const billingAddr = sameBilling
-                ? { ...activeAddress, type: 'BILLING' }
-                : { ...activeAddress, type: 'BILLING' };
+              // 4. Create order in DB — send ONLY the fields the backend
+              // AddressDto whitelists. A saved address selected from the list
+              // also carries id/userId/isDefault/timestamps; the API's
+              // ValidationPipe (forbidNonWhitelisted) rejects those with
+              // "property id should not exist", which would fail the order
+              // after payment already succeeded. Pick the allowed fields.
+              const toAddressDto = (a: Address, type: string) => ({
+                type,
+                firstName: a.firstName,
+                lastName: a.lastName,
+                phone: a.phone,
+                line1: a.line1,
+                line2: a.line2,
+                city: a.city,
+                state: a.state,
+                postalCode: a.postalCode,
+                country: a.country,
+              });
+              const shippingAddr = toAddressDto(activeAddress, 'SHIPPING');
+              const billingAddr = toAddressDto(activeAddress, 'BILLING');
 
               const order = await ordersApi.create({
                 items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
@@ -244,6 +259,12 @@ export default function CheckoutPage() {
           modal: {
             ondismiss: () => reject(new Error('Payment cancelled')),
           },
+        });
+        // Razorpay fires this when a payment attempt fails (declined card, etc.)
+        rzp.on('payment.failed', (resp: any) => {
+          reject(
+            new Error(resp?.error?.description || 'Payment failed. Please try a different method.')
+          );
         });
         rzp.open();
       });

@@ -31,6 +31,14 @@ yarn-error.log*
 .env
 .env*.local
 .env.production
+.env.development
+
+# Local credentials / secrets reference — contain REAL keys, NEVER commit.
+# (Committed *.example templates hold placeholders only and stay tracked.)
+docs/CREDENTIALS.local.md
+*.local.md
+*.secrets.md
+secrets/
 
 # Vercel
 .vercel
