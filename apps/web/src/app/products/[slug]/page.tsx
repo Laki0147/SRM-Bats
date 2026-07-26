@@ -12,6 +12,9 @@ import { useEffect, useState } from 'react';
 import { SiteNavbar } from '@/components/landing/SiteNavbar';
 import { SiteFooter } from '@/components/landing/SiteFooter';
 import { ProductDetail } from '@/components/product/ProductDetail';
+import { AtelierNav, AtelierFooter, PAPER, INK, OX } from '@/components/v2/atelier-ui';
+import { AtelierProductDetail } from '@/components/v2/AtelierProductDetail';
+import { useDesignVariant } from '@/lib/design-variant';
 import { productsApi } from '@/lib/api';
 import type { Product } from '@/lib/products';
 
@@ -232,6 +235,8 @@ interface Props {
 
 export default function ProductPage({ params }: Props) {
   const { slug } = params;
+  const { variant } = useDesignVariant();
+  const atelier = variant === 'atelier';
   const [product, setProduct] = useState<Product | null>(STATIC_PRODUCTS[slug] ?? null);
   const [notFound, setNotFound] = useState(!STATIC_PRODUCTS[slug]);
 
@@ -256,6 +261,28 @@ export default function ProductPage({ params }: Props) {
   }, [slug]);
 
   if (notFound) {
+    if (atelier) {
+      return (
+        <div className="min-h-screen" style={{ background: PAPER }}>
+          <AtelierNav activePath="/products" />
+          <div className="flex min-h-screen items-center justify-center">
+            <div className="text-center">
+              <p className="mb-3 font-body text-[24px] font-extrabold" style={{ color: INK }}>
+                Specimen not found
+              </p>
+              <a
+                href="/products"
+                className="font-mono text-[11px] uppercase tracking-[2px] underline underline-offset-4"
+                style={{ color: OX }}
+              >
+                Browse the ledger
+              </a>
+            </div>
+          </div>
+          <AtelierFooter />
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen" style={{ background: '#2c1f14' }}>
         <SiteNavbar activePath="/products" />
@@ -282,9 +309,24 @@ export default function ProductPage({ params }: Props) {
     return (
       <div
         className="flex min-h-screen items-center justify-center"
-        style={{ background: '#2c1f14' }}
+        style={{ background: atelier ? PAPER : '#2c1f14' }}
       >
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c4956a] border-t-transparent" />
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
+          style={{ borderColor: atelier ? OX : '#c4956a', borderTopColor: 'transparent' }}
+        />
+      </div>
+    );
+  }
+
+  if (atelier) {
+    return (
+      <div className="min-h-screen" style={{ background: PAPER }}>
+        <AtelierNav activePath="/products" />
+        <main className="pt-[66px]">
+          <AtelierProductDetail product={product} paletteIndex={PALETTE_MAP[slug] ?? 0} />
+        </main>
+        <AtelierFooter />
       </div>
     );
   }

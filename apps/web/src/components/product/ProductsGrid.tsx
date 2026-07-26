@@ -9,174 +9,15 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { productsApi } from '@/lib/api';
 import { useCartStore } from '@/lib/cart-store';
+import { useCatalogue, type CatalogueItem } from '@/lib/catalogue';
 
-// Static fallback data when API is unavailable
-const STATIC_PRODUCTS = [
-  {
-    id: '1',
-    slug: 'the-sovereign',
-    name: 'The Sovereign',
-    grade: 'Grade 1 English Willow',
-    profile: 'Full Bow',
-    price: 28500,
-    compareAtPrice: 32000,
-    rating: 5,
-    stock: 12,
-    fill: '#d2ae72',
-    sideFill: '#aa8848',
-    label: 'SOV',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'Full Bow' },
-    ],
-  },
-  {
-    id: '2',
-    slug: 'the-artisan',
-    name: 'The Artisan',
-    grade: 'Grade 2 English Willow',
-    profile: 'Mid Bow',
-    price: 19500,
-    compareAtPrice: 22000,
-    rating: 4,
-    stock: 18,
-    fill: '#c8a060',
-    sideFill: '#a08040',
-    label: 'ART',
-    specifications: [
-      { key: 'Willow', value: 'Grade 2 English Willow' },
-      { key: 'Profile', value: 'Mid Bow' },
-    ],
-  },
-  {
-    id: '3',
-    slug: 'the-heritage',
-    name: 'The Heritage',
-    grade: 'Grade 1 English Willow',
-    profile: 'Low Mid Bow',
-    price: 24000,
-    compareAtPrice: 27500,
-    rating: 5,
-    stock: 8,
-    fill: '#dfc07a',
-    sideFill: '#b09050',
-    label: 'HER',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'Low Mid Bow' },
-    ],
-  },
-  {
-    id: '4',
-    slug: 'the-pioneer',
-    name: 'The Pioneer',
-    grade: 'Grade 1 English Willow',
-    profile: 'High Mid Bow',
-    price: 31000,
-    compareAtPrice: 35000,
-    rating: 5,
-    stock: 6,
-    fill: '#e0c880',
-    sideFill: '#c0a050',
-    label: 'PIO',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'High Mid Bow' },
-    ],
-  },
-  {
-    id: '5',
-    slug: 'the-reserve',
-    name: 'The Reserve',
-    grade: 'Grade 2 English Willow',
-    profile: 'Traditional',
-    price: 13500,
-    compareAtPrice: 16000,
-    rating: 4,
-    stock: 25,
-    fill: '#d4b870',
-    sideFill: '#b09040',
-    label: 'RES',
-    specifications: [
-      { key: 'Willow', value: 'Grade 2 English Willow' },
-      { key: 'Profile', value: 'Traditional' },
-    ],
-  },
-  {
-    id: '6',
-    slug: 'the-bespoke',
-    name: 'The Bespoke',
-    grade: 'Grade 1 English Willow',
-    profile: 'Custom',
-    price: 42000,
-    compareAtPrice: null,
-    rating: 5,
-    stock: 5,
-    fill: '#c8a060',
-    sideFill: '#a08040',
-    label: 'BSP',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'Custom' },
-    ],
-  },
-  {
-    id: '7',
-    slug: 'the-centurion',
-    name: 'The Centurion',
-    grade: 'Grade 1 English Willow',
-    profile: 'Mid Bow',
-    price: 26500,
-    compareAtPrice: 30000,
-    rating: 4,
-    stock: 10,
-    fill: '#dfc07a',
-    sideFill: '#b09050',
-    label: 'CEN',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'Mid Bow' },
-    ],
-  },
-  {
-    id: '8',
-    slug: 'the-maestro',
-    name: 'The Maestro',
-    grade: 'Grade 1 English Willow',
-    profile: 'Full Bow',
-    price: 38000,
-    compareAtPrice: 44000,
-    rating: 5,
-    stock: 4,
-    fill: '#d2ae72',
-    sideFill: '#aa8848',
-    label: 'MAE',
-    specifications: [
-      { key: 'Willow', value: 'Grade 1 English Willow' },
-      { key: 'Profile', value: 'Full Bow' },
-    ],
-  },
-];
-
-type ProductItem = (typeof STATIC_PRODUCTS)[0];
-
-// Minimal shape of a product as returned by the API (used for mapping).
-interface ApiProduct {
-  id: string;
-  slug: string;
-  name: string;
-  price: number;
-  compareAtPrice: number | null;
-  stock: number;
-  specifications?: { key: string; value: string }[];
-}
+type ProductItem = CatalogueItem;
 
 // Hero product shot — dark scene, used across the catalogue for a consistent
 // premium dark treatment (the white-bg angle cutouts don't read on dark).
@@ -325,37 +166,7 @@ const SORT_OPTIONS = [
 
 export function ProductsGrid() {
   const [sort, setSort] = useState('featured');
-  const [products, setProducts] = useState<ProductItem[]>(STATIC_PRODUCTS);
-
-  useEffect(() => {
-    const fetchFromApi = async () => {
-      try {
-        const data = (await productsApi.fetchAll({ limit: 24 })) as { data?: ApiProduct[] };
-        if (data.data && data.data.length > 0) {
-          // Map API products to the card format
-          const mapped: ProductItem[] = data.data.map((p, i) => ({
-            id: p.id,
-            slug: p.slug,
-            name: p.name,
-            grade: p.specifications?.find((s) => s.key === 'Willow')?.value || 'English Willow',
-            profile: p.specifications?.find((s) => s.key === 'Profile')?.value || '',
-            price: p.price,
-            compareAtPrice: p.compareAtPrice ?? null,
-            rating: 5,
-            stock: p.stock,
-            fill: STATIC_PRODUCTS[i % STATIC_PRODUCTS.length].fill,
-            sideFill: STATIC_PRODUCTS[i % STATIC_PRODUCTS.length].sideFill,
-            label: p.name.split(' ').pop()?.substring(0, 3).toUpperCase() || 'BAT',
-            specifications: p.specifications ?? [],
-          }));
-          setProducts(mapped);
-        }
-      } catch {
-        // Stay with static fallback
-      }
-    };
-    void fetchFromApi();
-  }, []);
+  const products = useCatalogue();
 
   const sorted = [...products].sort((a, b) => {
     if (sort === 'price-asc') return a.price - b.price;
