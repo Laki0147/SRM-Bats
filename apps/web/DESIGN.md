@@ -88,11 +88,26 @@ complete visual worlds so they can be compared on the running site:
 
 Mechanics: `lib/design-variant.tsx` (context, persisted to `localStorage`,
 mirrored to `<html data-variant>`, SSR-safe — defaults to Heritage so first
-paint never flashes for the common case). The **home** renders fully in the
-active variant via `components/home/HomeExperience.tsx`; the Atelier world lives
-in `components/v2/AtelierHome.tsx` and reuses the real product facts, copy,
-assets, and the auth/cart stores — **no business logic changed**. Other routes
-currently fall back to Heritage; extend by adding variant branches per surface.
+paint never flashes for the common case).
+
+**Atelier coverage (switchable live):**
+
+- **Home** — `components/home/HomeExperience.tsx` → `components/v2/AtelierHome.tsx`.
+- **Products list** — `app/products/page.tsx` branches to `components/v2/AtelierProducts.tsx`.
+- **Product detail** — `app/products/[slug]/page.tsx` branches to
+  `components/v2/AtelierProductDetail.tsx` (incl. its loading + not-found states).
+
+Shared Atelier chrome (nav, footer, palette, helpers) lives once in
+`components/v2/atelier-ui.tsx`. The product catalogue + its API-fetch/mapping is
+a single source of truth in `lib/catalogue.ts`, consumed by **both** the
+heritage `ProductsGrid` and the Atelier surfaces — no duplicated data or fetch
+logic. Every Atelier surface reuses the real product facts, copy, assets, routes
+and the auth/cart stores — **no business logic changed**.
+
+Cart, checkout, auth and account routes intentionally stay on Heritage: they are
+money- and form-critical flows, kept on the proven design until an Atelier pass
+can be verified end-to-end. They render identically regardless of variant, so
+switching never affects a purchase. Extend by adding a variant branch per surface.
 
 ## Roadmap (optional, prioritized — not yet done)
 
