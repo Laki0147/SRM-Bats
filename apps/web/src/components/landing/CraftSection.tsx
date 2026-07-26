@@ -117,7 +117,8 @@ const stepVariants = {
 export function CraftSection() {
   return (
     <section
-      className="relative overflow-hidden px-6 py-[104px] lg:px-[52px]"
+      id="craft"
+      className="relative scroll-mt-[80px] overflow-hidden px-6 py-[104px] lg:px-[52px]"
       style={{ background: '#2c1f14' }}
     >
       {/* Willow-grain seam — the shop → story transition */}
@@ -149,13 +150,13 @@ export function CraftSection() {
             by hand, each unhurried. No shortcuts. No compromises.
           </p>
           <motion.a
-            href="/process"
+            href="/products"
             whileHover={{ y: -2, background: 'rgba(196,149,106,.12)' }}
             whileTap={{ scale: 0.96 }}
             className="inline-block rounded-[6px] px-[26px] py-[11px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-all duration-200"
             style={{ color: '#c4956a', border: '1.5px solid rgba(196,149,106,.4)' }}
           >
-            See the Full Process
+            Shop the Range
           </motion.a>
         </motion.div>
 

@@ -16,7 +16,7 @@ interface Collection {
 const collections: Collection[] = [
   { title: 'English Willow', sub: 'Premium Grade 1', image: HERO_SHOT },
   { title: 'Kashmir Willow', sub: 'Best for Practice', image: HERO_SHOT },
-  { title: 'Players Edition', sub: 'For Professionals', image: HERO_SHOT },
+  { title: "Players' Edition", sub: 'For Professionals', image: HERO_SHOT },
   { title: 'Junior Bats', sub: 'Future Champions', image: HERO_SHOT },
   { title: "Women's Bats", sub: 'Power. Precision.', image: HERO_SHOT },
 ];

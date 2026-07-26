@@ -11,19 +11,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, User, Heart, ShoppingBag, Menu, X, LogOut, Package } from 'lucide-react';
+import { User, ShoppingBag, Menu, X, LogOut, Package } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { useCartStore } from '@/lib/cart-store';
 import { LoginModal } from '@/components/layout/login-modal';
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/products', label: 'Collections' },
-  { href: '/about', label: 'About Us' },
-  { href: '/process', label: 'Our Process' },
-  { href: '/reviews', label: 'Reviews' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/products', label: 'Bats' },
 ];
 
 export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
@@ -135,14 +130,6 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
 
         {/* Actions */}
         <div className="flex items-center gap-1">
-          <Link
-            href="/search"
-            aria-label="Search"
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-[6px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.08)]"
-          >
-            <Search className="h-[18px] w-[18px] text-[#a09588]" strokeWidth={1.6} />
-          </Link>
-
           {/* User / Auth */}
           {authed && user ? (
             <div className="relative">
@@ -201,14 +188,6 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
               <User className="h-[18px] w-[18px] text-[#a09588]" strokeWidth={1.6} />
             </button>
           )}
-
-          <Link
-            href="/wishlist"
-            aria-label="Wishlist"
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-[6px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.08)]"
-          >
-            <Heart className="h-[18px] w-[18px] text-[#a09588]" strokeWidth={1.6} />
-          </Link>
 
           <Link
             href="/cart"

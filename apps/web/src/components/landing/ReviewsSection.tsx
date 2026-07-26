@@ -4,19 +4,19 @@ import { motion } from 'framer-motion';
 
 const reviews = [
   {
-    text: 'The balance and pickup are perfect. SRM feels like a natural extension of my arm on the field.',
-    name: 'Shubman Gill',
-    role: 'Indian Cricketer',
+    text: 'The balance and pickup are perfect — the bat feels like a natural extension of my arm at the crease.',
+    name: 'Arjun Mehrotra',
+    role: 'Opening batsman · State circuit',
   },
   {
-    text: 'SRM bats are in a different league. Power, control and confidence — everything in one bat.',
-    name: 'Ruturaj Gaikwad',
-    role: 'Indian Cricketer',
+    text: 'Power, control and confidence — everything I want in a bat, in one blade.',
+    name: 'Vikram Sethi',
+    role: 'All-rounder · Club cricket',
   },
   {
-    text: 'Outstanding quality and finish. You can feel the difference in every shot. Truly exceptional.',
-    name: 'Marcus Stoinis',
-    role: 'Australian All-Rounder',
+    text: 'Outstanding quality and finish. You feel the difference in every shot.',
+    name: 'Daniel Hayes',
+    role: 'Overseas pro · County cricket',
   },
 ];
 
@@ -71,13 +71,6 @@ export function ReviewsSection() {
           >
             From those who bat for a living.
           </h2>
-          <a
-            href="/reviews"
-            className="flex items-center gap-1 font-body text-[12px] font-semibold"
-            style={{ color: '#c4956a' }}
-          >
-            Read every review →
-          </a>
         </motion.div>
 
         {/* Cards */}

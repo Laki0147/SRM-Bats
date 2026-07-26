@@ -176,7 +176,7 @@ export function HeroSection() {
             Find Your Bat
           </motion.a>
           <motion.a
-            href="/about"
+            href="#craft"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.96 }}
             className="cursor-pointer rounded-[6px] px-[30px] py-[14px] font-body text-[12px] font-semibold uppercase tracking-[1.5px] transition-all duration-200"
@@ -194,7 +194,7 @@ export function HeroSection() {
               e.currentTarget.style.color = '#e8d9c4';
             }}
           >
-            Visit Our Workshop
+            See How They&apos;re Made
           </motion.a>
         </motion.div>
 

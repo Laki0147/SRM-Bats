@@ -6,26 +6,16 @@ import { Facebook, Instagram, Youtube, Twitter } from 'lucide-react';
 const shopLinks = [
   'English Willow',
   'Kashmir Willow',
-  'Players Edition',
+  "Players' Edition",
   'Junior Bats',
   "Women's Bats",
-  'Accessories',
 ];
-const aboutLinks = [
-  'Our Story',
-  'Our Process',
-  'Why SRM Bats',
-  'Player Testimonials',
-  'Blog',
-  'Contact Us',
-];
-const supportLinks = [
-  'Track Order',
-  'Shipping Policy',
-  'Returns & Refunds',
-  'FAQs',
-  'Size Guide',
-  'Care Guide',
+
+// Real, resolvable pages (auth-gated ones redirect to login when needed)
+const accountLinks = [
+  { label: 'My Orders', href: '/account/orders' },
+  { label: 'My Profile', href: '/account/profile' },
+  { label: 'Your Cart', href: '/cart' },
 ];
 
 const payMethods = ['Visa', 'Mastercard', 'RuPay', 'UPI', 'Paytm'];
@@ -35,7 +25,7 @@ export function SiteFooter() {
     <footer style={{ background: '#2c1f14', borderTop: '1px solid rgba(196,149,106,.12)' }}>
       <div className="px-6 pt-[60px] lg:px-[52px]">
         <div
-          className="grid grid-cols-2 gap-10 border-b pb-12 lg:grid-cols-[230px_1fr_1fr_1fr_170px]"
+          className="grid grid-cols-2 gap-10 border-b pb-12 lg:grid-cols-[240px_1fr_1fr_180px]"
           style={{ borderColor: 'rgba(255,255,255,.06)' }}
         >
           {/* Brand */}
@@ -143,51 +133,26 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* About */}
+          {/* Account */}
           <div>
             <h4
               className="font-sc mb-[17px] text-[11px] font-bold uppercase tracking-[2px]"
               style={{ color: '#f2ebe0', fontVariant: 'small-caps' }}
             >
-              About
+              Account
             </h4>
             <ul className="space-y-[10px]">
-              {aboutLinks.map((l) => (
-                <li key={l}>
-                  <a
-                    href="#"
+              {accountLinks.map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    href={href}
                     className="font-body text-[12px] transition-colors duration-200"
                     style={{ color: '#6b6358' }}
                     onMouseEnter={(e) => (e.currentTarget.style.color = '#c4956a')}
                     onMouseLeave={(e) => (e.currentTarget.style.color = '#a09588')}
                   >
-                    {l}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h4
-              className="font-sc mb-[17px] text-[11px] font-bold uppercase tracking-[2px]"
-              style={{ color: '#f2ebe0', fontVariant: 'small-caps' }}
-            >
-              Support
-            </h4>
-            <ul className="space-y-[10px]">
-              {supportLinks.map((l) => (
-                <li key={l}>
-                  <a
-                    href="#"
-                    className="font-body text-[12px] transition-colors duration-200"
-                    style={{ color: '#6b6358' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = '#c4956a')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = '#a09588')}
-                  >
-                    {l}
-                  </a>
+                    {label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -239,24 +204,10 @@ export function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-4 py-5 md:flex-row">
+        <div className="flex items-center justify-center py-5">
           <span className="font-body text-[11px]" style={{ color: '#6b6358' }}>
             © {new Date().getFullYear()} SRM Bats. All Rights Reserved.
           </span>
-          <div className="flex gap-5">
-            {['Privacy Policy', 'Terms & Conditions'].map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="font-body text-[11px] transition-colors"
-                style={{ color: '#6b6358' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#c4956a')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#a09588')}
-              >
-                {l}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

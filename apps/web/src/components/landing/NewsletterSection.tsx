@@ -56,7 +56,7 @@ const perks = [
       </svg>
     ),
     title: 'Player Stories',
-    sub: 'From the SRM bench',
+    sub: 'Interviews & match notes',
   },
 ];
 
@@ -87,7 +87,7 @@ export function NewsletterSection() {
             className="font-display text-[22px] font-bold leading-[1.4]"
             style={{ color: '#f2ebe0' }}
           >
-            First pick of the bench &mdash; and the know-how to keep it.
+            First look at new blades &mdash; and the know-how to keep them.
           </h3>
         </div>
 
