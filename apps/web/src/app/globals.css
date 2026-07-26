@@ -70,10 +70,19 @@ html {
   -webkit-overflow-scrolling: touch;
 }
 
-/* ── Custom cricket-ball cursor — hide native on pointer devices ── */
-@media (pointer: fine) {
+/* ── Custom cricket-ball cursor — hide native on fine pointers only ──
+   A11y: keep a real cursor on text fields so typing/selection stays usable,
+   and never hide the native cursor when the user prefers reduced motion
+   (the custom cursor is a motion effect). */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
   *, *::before, *::after {
     cursor: none !important;
+  }
+  input, textarea, select, [contenteditable="true"] {
+    cursor: auto !important;
+  }
+  a, button, [role="button"], label, summary {
+    cursor: pointer !important;
   }
 }
 
@@ -115,21 +124,10 @@ a, button, input[type="button"], input[type="submit"], [role="button"] {
    UTILITY CLASSES
    ======================================== */
 
-/* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* Note: `.glass` (glassmorphism) and `.gradient-text` were removed during the
+   Impeccable pass — both are generic surface habits that read as AI-generated,
+   and neither is used by any live surface. Emphasis comes from weight/size and
+   the heritage palette, not gradient fills. */
 
 /* Hover lift effect */
 .hover-lift {
@@ -181,13 +179,20 @@ a, button, input[type="button"], input[type="submit"], [role="button"] {
 @layer components {
   /* Premium Button Styles */
   .btn-primary {
-    @apply inline-flex items-center gap-3 px-8 py-4 bg-[#8b5e3c] text-[#f2ebe0] text-[16px] font-medium rounded-[6px] transition-all;
-    box-shadow: 0 8px 24px rgba(139, 94, 60, 0.3);
+    @apply inline-flex items-center gap-3 px-8 py-4 bg-[#8b5e3c] text-[#f2ebe0] text-[16px] font-medium rounded-[6px];
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+    box-shadow: 0 6px 16px rgba(139, 94, 60, 0.22);
   }
 
+  /* Lift only, no scale — scale-on-hover is a tell; a settled surface reads more premium. */
   .btn-primary:hover {
-    box-shadow: 0 12px 32px rgba(139, 94, 60, 0.4);
-    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 24px rgba(139, 94, 60, 0.28);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(139, 94, 60, 0.2);
   }
 
   .btn-secondary {

@@ -9,7 +9,7 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { User, ShoppingBag, Menu, X, LogOut, Package } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
@@ -27,6 +27,7 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
   const [loginOpen, setLoginOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const { user, isAuthenticated, logout, loadProfile } = useAuthStore();
   const { getItemCount, fetchCart } = useCartStore();
@@ -48,6 +49,25 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Dismiss the account menu on outside click or Escape (keyboard + pointer).
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setUserMenuOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [userMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -110,6 +130,7 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
             <li key={link.href}>
               <Link
                 href={link.href}
+                aria-current={activePath === link.href ? 'page' : undefined}
                 className={`group relative px-[12px] py-[7px] text-[13px] font-medium transition-colors duration-200 ${
                   activePath === link.href
                     ? 'text-[#c4956a]'
@@ -132,10 +153,12 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
         <div className="flex items-center gap-1">
           {/* User / Auth */}
           {authed && user ? (
-            <div className="relative">
+            <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 aria-label="Account menu"
+                aria-haspopup="menu"
+                aria-expanded={userMenuOpen}
                 className="flex h-[38px] w-[38px] items-center justify-center rounded-[6px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.08)]"
               >
                 <div
@@ -147,6 +170,7 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
               </button>
               {userMenuOpen && (
                 <div
+                  role="menu"
                   className="z-60 absolute right-0 top-[46px] w-[200px] rounded-[12px] border border-white/10 py-2"
                   style={{ background: '#2c1f14' }}
                 >
