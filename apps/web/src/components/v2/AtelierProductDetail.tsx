@@ -13,17 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/products';
 import { useCartStore } from '@/lib/cart-store';
-import {
-  PAPER,
-  PAPER_2,
-  INK,
-  INK_SOFT,
-  MUTED,
-  OX,
-  HAIR,
-  easeOut,
-  inr,
-} from '@/components/v2/atelier-ui';
+import { PAPER, INK, INK_SOFT, MUTED, OX, HAIR, easeOut, inr } from '@/components/v2/atelier-ui';
 
 const LOCAL_GALLERY = ['/bats/main.png'];
 
@@ -102,7 +92,7 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
             >
               <div
                 className="relative aspect-[4/5] overflow-hidden rounded-xl"
-                style={{ background: PAPER_2, border: `1px solid ${HAIR}` }}
+                style={{ background: PAPER, border: `1px solid ${HAIR}` }}
               >
                 <span
                   className="absolute left-4 top-4 z-10 font-mono text-[9.5px] uppercase tracking-[2px]"
@@ -147,7 +137,7 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
                       aria-label={`View ${i + 1}`}
                       className="relative h-16 w-16 overflow-hidden rounded-md transition-all"
                       style={{
-                        background: PAPER_2,
+                        background: PAPER,
                         border: `1px solid ${i === activeImg ? OX : HAIR}`,
                       }}
                     >
@@ -271,7 +261,13 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
                 disabled={!inStock}
                 whileTap={{ scale: 0.98 }}
                 className="flex h-12 flex-1 items-center justify-center gap-2 rounded-md font-mono text-[12px] font-medium uppercase tracking-[2px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-45"
-                style={{ background: added ? '#4c7a4c' : OX }}
+                style={{ background: added ? '#4c7a4c' : INK }}
+                onMouseEnter={(e) => {
+                  if (!added && inStock) e.currentTarget.style.background = OX;
+                }}
+                onMouseLeave={(e) => {
+                  if (!added && inStock) e.currentTarget.style.background = INK;
+                }}
                 aria-label="Add to cart"
               >
                 <AnimatePresence mode="wait">
@@ -315,7 +311,7 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
                       key={spec.id}
                       className="flex items-baseline justify-between gap-4 px-4 py-3"
                       style={{
-                        background: i % 2 === 0 ? PAPER : PAPER_2,
+                        background: PAPER,
                         borderTop: i === 0 ? 'none' : `1px solid ${HAIR}`,
                       }}
                     >
@@ -351,7 +347,7 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
                     <figure
                       key={r.id}
                       className="rounded-lg px-4 py-4"
-                      style={{ background: PAPER_2, border: `1px solid ${HAIR}` }}
+                      style={{ background: PAPER, border: `1px solid ${HAIR}` }}
                     >
                       <div className="mb-1.5 flex items-center gap-2">
                         <span className="font-mono text-[12px]" style={{ color: INK_SOFT }}>

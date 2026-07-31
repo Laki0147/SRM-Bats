@@ -14,8 +14,8 @@ import { useCartStore } from '@/lib/cart-store';
 import { LoginModal } from '@/components/layout/login-modal';
 
 // palette
-export const PAPER = '#ece8df';
-export const PAPER_2 = '#e4dfd4';
+export const PAPER = '#ece8df'; // primary surface — used consistently across every section
+export const PANEL = '#f6f2ea'; // header/chrome surface — a cleaner lift so the bar reads as its own layer
 export const INK = '#17140f';
 export const INK_SOFT = '#4c463c';
 export const MUTED = '#8b8478';
@@ -76,11 +76,13 @@ export function AtelierNav({ activePath }: { activePath?: string } = {}) {
   return (
     <>
       <header
-        className="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+        className="fixed inset-x-0 top-0 z-50 transition-shadow duration-300"
         style={{
-          background: scrolled ? 'rgba(236,232,223,0.92)' : 'rgba(236,232,223,0.72)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: `1px solid ${scrolled ? HAIR : 'transparent'}`,
+          background: PANEL,
+          borderBottom: `1px solid rgba(23,20,15,${scrolled ? '0.12' : '0.09'})`,
+          boxShadow: scrolled
+            ? '0 1px 2px rgba(23,20,15,0.05), 0 10px 30px rgba(23,20,15,0.09)'
+            : '0 1px 2px rgba(23,20,15,0.03), 0 4px 16px rgba(23,20,15,0.05)',
         }}
       >
         <div className="mx-auto flex h-[66px] max-w-[1320px] items-center justify-between px-6 lg:px-10">
@@ -138,8 +140,8 @@ export function AtelierNav({ activePath }: { activePath?: string } = {}) {
                 {userOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 top-[44px] w-[196px] rounded-xl border py-2"
-                    style={{ background: PAPER, borderColor: HAIR }}
+                    className="absolute right-0 top-[44px] w-[196px] rounded-xl border py-2 shadow-lg"
+                    style={{ background: PANEL, borderColor: HAIR }}
                   >
                     <div className="mb-1 border-b px-4 py-2" style={{ borderColor: HAIR }}>
                       <p className="truncate text-[12px] font-semibold" style={{ color: INK }}>
@@ -218,7 +220,7 @@ export function AtelierNav({ activePath }: { activePath?: string } = {}) {
         {menuOpen && (
           <div
             className="border-t px-6 py-3 md:hidden"
-            style={{ borderColor: HAIR, background: PAPER }}
+            style={{ borderColor: HAIR, background: PANEL }}
           >
             {NAV_LINKS.map(([label, href]) => (
               <Link

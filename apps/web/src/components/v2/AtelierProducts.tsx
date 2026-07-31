@@ -17,7 +17,6 @@ import {
   AtelierNav,
   AtelierFooter,
   PAPER,
-  PAPER_2,
   INK,
   INK_SOFT,
   MUTED,
@@ -78,7 +77,7 @@ function SpecimenCard({ p, index }: { p: CatalogueItem; index: number }) {
         {/* plate */}
         <div
           className="relative aspect-[3/4] overflow-hidden rounded-lg"
-          style={{ background: PAPER_2, border: `1px solid ${HAIR}` }}
+          style={{ background: PAPER, border: `1px solid ${HAIR}` }}
         >
           <span
             className="absolute left-3 top-3 z-10 font-mono text-[9px] uppercase tracking-[2px]"
@@ -137,10 +136,18 @@ function SpecimenCard({ p, index }: { p: CatalogueItem; index: number }) {
             style={{
               borderColor: added ? OX : HAIR,
               color: added ? OX : INK,
-              background: adding ? PAPER_2 : 'transparent',
+              background: adding ? 'rgba(23,20,15,0.05)' : 'transparent',
             }}
-            onMouseEnter={(e) => !added && (e.currentTarget.style.borderColor = OX)}
-            onMouseLeave={(e) => !added && (e.currentTarget.style.borderColor = HAIR)}
+            onMouseEnter={(e) => {
+              if (added) return;
+              e.currentTarget.style.borderColor = OX;
+              e.currentTarget.style.color = OX;
+            }}
+            onMouseLeave={(e) => {
+              if (added) return;
+              e.currentTarget.style.borderColor = HAIR;
+              e.currentTarget.style.color = INK;
+            }}
           >
             {added ? (
               <>

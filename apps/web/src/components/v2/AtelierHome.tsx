@@ -16,7 +16,6 @@ import {
   AtelierFooter,
   ArrowUpRight,
   PAPER,
-  PAPER_2,
   INK,
   INK_SOFT,
   MUTED,
@@ -140,8 +139,10 @@ function Hero() {
           >
             <Link
               href="/products"
-              className="group inline-flex items-center gap-2 rounded-md px-7 py-3.5 font-mono text-[12px] font-medium uppercase tracking-[2px] text-white transition-transform hover:-translate-y-0.5"
-              style={{ background: OX }}
+              className="group inline-flex items-center gap-2 rounded-md px-7 py-3.5 font-mono text-[12px] font-medium uppercase tracking-[2px] text-white transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: INK }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = OX)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = INK)}
             >
               Find your bat{' '}
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -254,7 +255,7 @@ function Specimens() {
               <Link href={`/products/${s.slug}`} className="group block">
                 <div
                   className="relative aspect-[3/4] overflow-hidden rounded-lg"
-                  style={{ background: PAPER_2, border: `1px solid ${HAIR}` }}
+                  style={{ background: PAPER, border: `1px solid ${HAIR}` }}
                 >
                   <span
                     className="absolute left-3 top-3 z-10 font-mono text-[9px] uppercase tracking-[2px]"
@@ -306,35 +307,35 @@ function Specimens() {
   );
 }
 
-// ── Craft (dark ink band) ─────────────────────────────────────────────────────
+// ── Craft — same primary surface, structured by hairline rules (not a dark band) ──
 function Craft() {
   return (
-    <section id="craft" className="px-6 py-24 lg:px-10 lg:py-32" style={{ background: INK }}>
+    <section id="craft" className="px-6 py-24 lg:px-10 lg:py-32" style={{ background: PAPER }}>
       <div className="mx-auto max-w-[1320px]">
         <p className="mb-4 font-mono text-[11px] uppercase tracking-[3px]" style={{ color: OX }}>
           Four hands, one blade
         </p>
         <h2
           className="max-w-[20ch] font-body text-[clamp(28px,3.6vw,44px)] font-extrabold leading-[1.05]"
-          style={{ color: PAPER, letterSpacing: '-0.03em' }}
+          style={{ color: INK, letterSpacing: '-0.03em' }}
         >
           A bat is not manufactured. It is made.
         </h2>
         <div
           className="mt-14 grid gap-px overflow-hidden rounded-xl sm:grid-cols-2 lg:grid-cols-4"
-          style={{ background: 'rgba(236,232,223,0.12)' }}
+          style={{ background: HAIR, border: `1px solid ${HAIR}` }}
         >
           {PROCESS.map(([n, title, body]) => (
-            <div key={n} className="p-6 lg:p-7" style={{ background: INK }}>
+            <div key={n} className="p-6 lg:p-7" style={{ background: PAPER }}>
               <span className="font-mono text-[13px] font-medium" style={{ color: OX }}>
                 {n}
               </span>
-              <h3 className="mt-4 font-body text-[18px] font-bold" style={{ color: PAPER }}>
+              <h3 className="mt-4 font-body text-[18px] font-bold" style={{ color: INK }}>
                 {title}
               </h3>
               <p
                 className="mt-2 font-body text-[13.5px] leading-[1.65]"
-                style={{ color: 'rgba(236,232,223,0.62)' }}
+                style={{ color: INK_SOFT }}
               >
                 {body}
               </p>
@@ -359,8 +360,10 @@ function Closing() {
         </h2>
         <Link
           href="/products"
-          className="inline-flex shrink-0 items-center gap-2 rounded-md px-8 py-4 font-mono text-[12px] font-medium uppercase tracking-[2px] text-white transition-transform hover:-translate-y-0.5"
-          style={{ background: OX }}
+          className="inline-flex shrink-0 items-center gap-2 rounded-md px-8 py-4 font-mono text-[12px] font-medium uppercase tracking-[2px] text-white transition-all duration-200 hover:-translate-y-0.5"
+          style={{ background: INK }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = OX)}
+          onMouseLeave={(e) => (e.currentTarget.style.background = INK)}
         >
           Browse every specimen <ArrowUpRight className="h-4 w-4" />
         </Link>
