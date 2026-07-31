@@ -79,10 +79,10 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
       <nav
         className={`fixed left-0 right-0 top-0 z-50 flex h-[68px] items-center justify-between border-b px-6 transition-all duration-300 lg:px-[52px] ${
           scrolled
-            ? 'border-white/10 bg-[rgba(44,31,20,0.98)] shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
-            : 'border-white/6 bg-[rgba(44,31,20,0.96)]'
+            ? 'border-white/10 bg-[rgba(44,31,20,0.80)] shadow-[0_4px_24px_rgba(0,0,0,0.28)]'
+            : 'border-white/6 bg-[rgba(44,31,20,0.60)]'
         }`}
-        style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+        style={{ backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' }}
       >
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-3">

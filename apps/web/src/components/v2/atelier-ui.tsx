@@ -76,13 +76,15 @@ export function AtelierNav({ activePath }: { activePath?: string } = {}) {
   return (
     <>
       <header
-        className="fixed inset-x-0 top-0 z-50 transition-shadow duration-300"
+        className="fixed inset-x-0 top-0 z-50 transition-all duration-300"
         style={{
-          background: PANEL,
-          borderBottom: `1px solid rgba(23,20,15,${scrolled ? '0.12' : '0.09'})`,
-          boxShadow: scrolled
-            ? '0 1px 2px rgba(23,20,15,0.05), 0 10px 30px rgba(23,20,15,0.09)'
-            : '0 1px 2px rgba(23,20,15,0.03), 0 4px 16px rgba(23,20,15,0.05)',
+          // Frosted glass: translucent chrome tone + backdrop blur. More see-through at
+          // the top, a touch more frosted on scroll so nav labels stay legible over content.
+          background: scrolled ? 'rgba(246,242,234,0.80)' : 'rgba(246,242,234,0.55)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          borderBottom: `1px solid rgba(23,20,15,${scrolled ? '0.12' : '0.08'})`,
+          boxShadow: scrolled ? '0 4px 20px rgba(23,20,15,0.06)' : 'none',
         }}
       >
         <div className="mx-auto flex h-[66px] max-w-[1320px] items-center justify-between px-6 lg:px-10">
