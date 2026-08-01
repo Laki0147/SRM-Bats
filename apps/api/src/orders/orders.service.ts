@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
+
 import {
   Injectable,
   NotFoundException,
@@ -5,7 +7,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
+import { CreateOrderDto, UpdateOrderStatusDto, AdminOrdersQueryDto } from './dto/order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -34,7 +36,7 @@ export class OrdersService {
       const product = productMap.get(item.productId);
       if (product.stock < item.quantity) {
         throw new BadRequestException(
-          `Insufficient stock for "${product.name}". Available: ${product.stock}`,
+          `Insufficient stock for "${product.name}". Available: ${product.stock}`
         );
       }
     }
@@ -55,8 +57,8 @@ export class OrdersService {
           tx.product.update({
             where: { id: item.productId },
             data: { stock: { decrement: item.quantity } },
-          }),
-        ),
+          })
+        )
       );
 
       // Create the order
@@ -121,6 +123,104 @@ export class OrdersService {
     });
   }
 
+  // Admin: all orders across every user, with filters + pagination.
+  async getAllOrders(query: AdminOrdersQueryDto): Promise<any> {
+    const { status, search, startDate, endDate } = query;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+    if (status) where.status = status;
+
+    if (search) {
+      where.OR = [
+        { orderNumber: { contains: search, mode: 'insensitive' } },
+        { user: { email: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) where.createdAt.gte = new Date(startDate);
+      if (endDate) {
+        // Include the whole end day.
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.createdAt.lte = end;
+      }
+    }
+
+    const [total, orders] = await Promise.all([
+      this.prisma.order.count({ where }),
+      this.prisma.order.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: {
+            select: { id: true, email: true, firstName: true, lastName: true },
+          },
+          items: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  images: { orderBy: { order: 'asc' }, take: 1 },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    return {
+      data: orders,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
+  }
+
+  // Admin: full order detail regardless of owner.
+  async getOrderAdmin(orderId: string): Promise<any> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+          },
+        },
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                images: { orderBy: { order: 'asc' }, take: 1 },
+                specifications: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
+  }
+
   async getOrder(userId: string, orderId: string): Promise<any> {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
@@ -152,7 +252,12 @@ export class OrdersService {
     return order;
   }
 
-  async updateOrderStatus(orderId: string, dto: UpdateOrderStatusDto, userId: string, isAdmin = false): Promise<any> {
+  async updateOrderStatus(
+    orderId: string,
+    dto: UpdateOrderStatusDto,
+    userId: string,
+    isAdmin = false
+  ): Promise<any> {
     const order = await this.prisma.order.findUnique({ where: { id: orderId } });
 
     if (!order) {

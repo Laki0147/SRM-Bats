@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto, UpdateProductDto, QueryProductDto } from './dto';
@@ -6,7 +8,7 @@ import { CreateProductDto, UpdateProductDto, QueryProductDto } from './dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: QueryProductDto) {
+  async findAll(query: QueryProductDto, includeInactive = false) {
     const {
       search,
       category,
@@ -21,7 +23,9 @@ export class ProductsService {
 
     const skip = (page - 1) * limit;
 
-    const where: any = { isActive: true };
+    // Admin listings include inactive (soft-deleted) products; public ones don't.
+    const where: any = {};
+    if (!includeInactive) where.isActive = true;
 
     if (search) {
       where.OR = [
@@ -75,9 +79,9 @@ export class ProductsService {
     };
   }
 
-  async findOne(slug: string) {
+  async findOne(slug: string, includeInactive = false) {
     const product = await this.prisma.product.findUnique({
-      where: { slug, isActive: true },
+      where: includeInactive ? { slug } : { slug, isActive: true },
       include: {
         category: { select: { id: true, name: true, slug: true } },
         brand: { select: { id: true, name: true, slug: true } },
@@ -122,12 +126,8 @@ export class ProductsService {
         images: images
           ? { create: images.map((img, i) => ({ ...img, order: img.order ?? i })) }
           : undefined,
-        specifications: specifications
-          ? { create: specifications }
-          : undefined,
-        variants: variants
-          ? { create: variants }
-          : undefined,
+        specifications: specifications ? { create: specifications } : undefined,
+        variants: variants ? { create: variants } : undefined,
       },
       include: {
         images: true,
@@ -144,15 +144,36 @@ export class ProductsService {
 
     const { images, specifications, variants, ...productData } = updateProductDto;
 
-    return this.prisma.product.update({
-      where: { id: product.id },
-      data: productData,
-      include: {
-        images: true,
-        specifications: true,
-        variants: true,
-        category: { select: { id: true, name: true, slug: true } },
-      },
+    // Nested collections are replaced wholesale when provided so the CMS edit
+    // form can add/remove/reorder images and specs. Done in a transaction.
+    return this.prisma.$transaction(async (tx) => {
+      if (images !== undefined) {
+        await tx.productImage.deleteMany({ where: { productId: product.id } });
+      }
+      if (specifications !== undefined) {
+        await tx.productSpec.deleteMany({ where: { productId: product.id } });
+      }
+      if (variants !== undefined) {
+        await tx.productVariant.deleteMany({ where: { productId: product.id } });
+      }
+
+      return tx.product.update({
+        where: { id: product.id },
+        data: {
+          ...productData,
+          ...(images !== undefined
+            ? { images: { create: images.map((img, i) => ({ ...img, order: img.order ?? i })) } }
+            : {}),
+          ...(specifications !== undefined ? { specifications: { create: specifications } } : {}),
+          ...(variants !== undefined ? { variants: { create: variants } } : {}),
+        },
+        include: {
+          images: { orderBy: { order: 'asc' } },
+          specifications: true,
+          variants: true,
+          category: { select: { id: true, name: true, slug: true } },
+        },
+      });
     });
   }
 
