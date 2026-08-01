@@ -231,3 +231,38 @@ model Review {
 
   @@unique([userId, productId])
 }
+
+model Coupon {
+  id          String       @id @default(cuid())
+  code        String       @unique
+  description String?
+  type        DiscountType @default(PERCENT)
+  value       Float
+  minOrder    Float?
+  usageLimit  Int?
+  usedCount   Int          @default(0)
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum DiscountType {
+  PERCENT
+  FLAT
+}
+
+model Banner {
+  id        String    @id @default(cuid())
+  heading   String
+  subtext   String?
+  imageUrl  String?
+  linkUrl   String?
+  isActive  Boolean   @default(false)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}

@@ -1,12 +1,33 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 const CATEGORY_SLUG = 'cricket-bats';
 const BRAND_SLUG = 'srm-bats';
 
+// Admin credentials are read from env so nothing sensitive is hardcoded.
+// The defaults below are for local development only — override in real setups.
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@srmbats.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'ChangeMe!Admin123';
+
 async function main() {
   console.log('🌱 Seeding SRM Bats database...');
+
+  // Upsert an admin user so the CMS at /admin is usable out of the box.
+  const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
+  await prisma.user.upsert({
+    where: { email: ADMIN_EMAIL },
+    update: { role: 'ADMIN' },
+    create: {
+      email: ADMIN_EMAIL,
+      passwordHash,
+      firstName: 'Store',
+      lastName: 'Admin',
+      role: 'ADMIN',
+    },
+  });
+  console.log(`  👤 Admin ready → ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
 
   // Upsert brand
   const brand = await prisma.brand.upsert({
@@ -175,7 +196,7 @@ async function main() {
       name: 'The Maestro',
       slug: 'the-maestro',
       description:
-        'Reserved for the most discerning players. Exceptional Grade 1 English Willow, hand-selected for grain straightness and density. A collector\'s item as much as a playing weapon.',
+        "Reserved for the most discerning players. Exceptional Grade 1 English Willow, hand-selected for grain straightness and density. A collector's item as much as a playing weapon.",
       price: 38000,
       compareAtPrice: 44000,
       sku: 'SRM-MAE-001',
@@ -224,6 +245,6 @@ main()
     console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    void prisma.$disconnect();
   });

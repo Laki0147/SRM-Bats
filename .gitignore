@@ -17,6 +17,9 @@ dist/
 # Production
 build
 
+# Admin CMS uploaded images (stored on local disk, served at /uploads)
+apps/api/uploads/
+
 # Misc
 .DS_Store
 *.pem
