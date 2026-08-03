@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { User, ShoppingBag, Menu, X, LogOut, Package } from 'lucide-react';
+import { User, ShoppingBag, Menu, X, LogOut, Package, LayoutDashboard } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { useCartStore } from '@/lib/cart-store';
 import { LoginModal } from '@/components/layout/login-modal';
@@ -180,6 +180,15 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
                     </p>
                     <p className="truncate text-[10px] text-[#a09588]">{user.email}</p>
                   </div>
+                  {(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-[12px] font-semibold text-[#c4956a] transition-colors hover:bg-white/5 hover:text-[#f2ebe0]"
+                    >
+                      <LayoutDashboard className="h-3.5 w-3.5" /> Admin Panel
+                    </Link>
+                  )}
                   <Link
                     href="/account/profile"
                     onClick={() => setUserMenuOpen(false)}
@@ -258,6 +267,15 @@ export function SiteNavbar({ activePath = '/' }: { activePath?: string }) {
             ))}
             {authed ? (
               <>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
+                  <Link
+                    href="/admin"
+                    className="rounded-lg px-3 py-3 text-[13px] font-semibold text-[#c4956a] transition-all hover:bg-[rgba(255,255,255,0.06)] hover:text-[#e8d9c4]"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   href="/account/orders"
                   className="rounded-lg px-3 py-3 text-[13px] font-medium text-[#a09588] transition-all hover:bg-[rgba(255,255,255,0.06)] hover:text-[#e8d9c4]"
