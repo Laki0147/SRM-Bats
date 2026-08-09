@@ -6,13 +6,15 @@
 // The specimen record: a framed plate on the left, a hand-set spec sheet on the
 // right. Consumes the same `Product` shape and the same cart store as the
 // heritage detail view, so add-to-cart, quantity and stock logic are identical.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Check, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Product } from '@/lib/products';
 import { useCartStore } from '@/lib/cart-store';
+import { useAuthStore } from '@/lib/auth-store';
 import { PAPER, INK, INK_SOFT, MUTED, OX, HAIR, easeOut, inr } from '@/components/v2/atelier-ui';
 
 const LOCAL_GALLERY = ['/bats/main.png'];
@@ -27,7 +29,16 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
   const [added, setAdded] = useState(false);
   const [addError, setAddError] = useState('');
   const [activeImg, setActiveImg] = useState(0);
-  const { addItem, openCart } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const { addItem, openCart, summary, localItems } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
+
+  // Cart is client-only (persisted for guests); wait for mount before rendering
+  // the in-bag bar so SSR and first client paint agree.
+  useEffect(() => setMounted(true), []);
+  const cartCount = summary.itemCount || localItems.reduce((n, i) => n + i.quantity, 0);
+  const goToCheckout = () => router.push(isAuthenticated ? '/checkout' : '/cart');
 
   const apiImages = product.images?.map((im) => im.url) ?? [];
   const offset = paletteIndex % LOCAL_GALLERY.length;
@@ -295,6 +306,45 @@ export function AtelierProductDetail({ product, paletteIndex = 0 }: Props) {
                 </AnimatePresence>
               </motion.button>
             </div>
+
+            {/* In-bag quick checkout — appears once the bag has items so the
+                cart and checkout are reachable straight from the specimen page. */}
+            {mounted && cartCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: easeOut }}
+                className="mt-6 flex flex-col gap-3 rounded-lg px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+                style={{ background: PAPER, border: `1px solid ${HAIR}` }}
+              >
+                <span
+                  className="font-mono text-[10.5px] uppercase tracking-[1.5px]"
+                  style={{ color: MUTED }}
+                >
+                  <span style={{ color: OX }}>{cartCount}</span> item
+                  {cartCount !== 1 ? 's' : ''} in bag
+                </span>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/cart"
+                    className="rounded-md px-4 py-2 font-mono text-[10.5px] font-medium uppercase tracking-[1.5px] transition-colors"
+                    style={{ border: `1px solid ${HAIR}`, color: INK }}
+                  >
+                    View bag
+                  </Link>
+                  <button
+                    onClick={goToCheckout}
+                    className="flex items-center gap-1.5 rounded-md px-4 py-2 font-mono text-[10.5px] font-medium uppercase tracking-[1.5px] text-white transition-colors"
+                    style={{ background: INK }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = OX)}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = INK)}
+                    aria-label="Proceed to checkout"
+                  >
+                    Checkout <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             {/* spec sheet */}
             {product.specifications?.length > 0 && (

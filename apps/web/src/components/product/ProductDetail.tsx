@@ -9,7 +9,7 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShoppingBag,
@@ -21,10 +21,14 @@ import {
   Truck,
   RefreshCw,
   CheckCircle,
+  ArrowRight,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Product } from '@/lib/products';
 import { useCartStore } from '@/lib/cart-store';
+import { useAuthStore } from '@/lib/auth-store';
 
 // ─── Hero product shot for the dark gallery ────────────────────────────────
 // The white-bg angle cutouts don't read on the dark theme, so we lead with the
@@ -52,8 +56,17 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
   const [specsOpen, setSpecsOpen] = useState(true);
   const [reviewsOpen, setReviewsOpen] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
-  const { addItem, openCart } = useCartStore();
+  const router = useRouter();
+  const { addItem, openCart, summary, localItems } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
+
+  // Cart is client-only (persisted for guests), so wait for mount before showing
+  // the in-cart bar — otherwise SSR (empty cart) and first client paint disagree.
+  useEffect(() => setMounted(true), []);
+  const cartCount = summary.itemCount || localItems.reduce((n, i) => n + i.quantity, 0);
+  const goToCheckout = () => router.push(isAuthenticated ? '/checkout' : '/cart');
 
   // Prefer real API imagery; otherwise fall back to the local photo set,
   // rotated per product so each bat leads with a slightly different angle.
@@ -353,6 +366,46 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
                 />
               </button>
             </div>
+
+            {/* In-cart quick checkout — surfaces once the cart has items so you
+                can jump straight to cart/checkout from the product page without
+                opening the nav menu. */}
+            {mounted && cartCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="mb-6 flex flex-col gap-3 rounded-[12px] border p-4 sm:flex-row sm:items-center sm:justify-between"
+                style={{
+                  background: 'rgba(196,149,106,.08)',
+                  borderColor: 'rgba(196,149,106,.22)',
+                }}
+              >
+                <span className="font-body text-[12.5px]" style={{ color: '#e8d9c4' }}>
+                  <span className="font-semibold" style={{ color: '#c4956a' }}>
+                    {cartCount}
+                  </span>{' '}
+                  item{cartCount !== 1 ? 's' : ''} in your cart
+                </span>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/cart"
+                    className="rounded-[6px] border px-4 py-2.5 font-body text-[12.5px] font-semibold transition-colors hover:bg-[rgba(196,149,106,.12)]"
+                    style={{ borderColor: 'rgba(196,149,106,.35)', color: '#e8d9c4' }}
+                  >
+                    View cart
+                  </Link>
+                  <button
+                    onClick={goToCheckout}
+                    className="flex items-center gap-1.5 rounded-[6px] px-4 py-2.5 font-body text-[12.5px] font-semibold transition-opacity hover:opacity-90"
+                    style={{ background: '#8b5e3c', color: '#faf6f0' }}
+                    aria-label="Proceed to checkout"
+                  >
+                    Checkout <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             {/* Trust strip */}
             <div className="mb-8 grid grid-cols-2 gap-2">
