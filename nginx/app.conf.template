@@ -1,0 +1,74 @@
+# SRM Bats — nginx reverse proxy with Let's Encrypt TLS.
+#
+# Template: the init script renders this to nginx/conf.d/app.conf with
+#   envsubst '${DOMAIN}'
+# so ONLY ${DOMAIN} is substituted and nginx's own $host / $scheme / etc.
+# are left intact. Both subdomains share one SAN certificate whose lineage is
+# named after the first -d passed to certbot (shop.<DOMAIN>).
+
+# --- HTTP :80 — ACME challenge + redirect everything else to HTTPS ----------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name shop.${DOMAIN} api.${DOMAIN};
+
+    # Served for certbot webroot renewals; must NOT be redirected.
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# --- HTTPS :443 — storefront (Next.js standalone) ---------------------------
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name shop.${DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/shop.${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/shop.${DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers off;
+
+    location / {
+        proxy_pass         http://web:3000;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection "upgrade";
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+
+# --- HTTPS :443 — API (NestJS); also serves product images at /uploads/* ----
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name api.${DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/shop.${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/shop.${DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers off;
+
+    # Allow product-image uploads through the proxy.
+    client_max_body_size 25m;
+
+    location / {
+        proxy_pass         http://api:3001;
+        proxy_http_version 1.1;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}

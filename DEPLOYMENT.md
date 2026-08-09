@@ -44,6 +44,9 @@ root `packageManager` field.
 | `packages/database/package.json` | Adds `db:deploy` (`prisma migrate deploy`) used by the `migrate` service.                                                                                                                               |
 | `docker-compose.proxy.yml`       | Optional overlay for **public HTTPS**: adds a Caddy reverse proxy (80/443, automatic TLS) and stops publishing the raw 3000/3001 ports. See _Public HTTPS deployment_ below.                            |
 | `Caddyfile`                      | Caddy config for the proxy overlay — routes `shop.<domain>` → web and `api.<domain>` → api, with automatic Let's Encrypt certificates.                                                                  |
+| `docker-compose.nginx.yml`       | Alternative public-HTTPS overlay using **nginx + certbot** instead of Caddy (same result; certbot issues/renews, nginx reloads every 6h). See _nginx + certbot variant_ below.                          |
+| `nginx/app.conf.template`        | nginx server blocks (`shop`->web, `api`->api) with TLS; the init script renders it to `nginx/conf.d/app.conf`.                                                                                          |
+| `nginx/init-letsencrypt.sh`      | One-time: renders the nginx config and obtains the first Let's Encrypt certificate (standalone).                                                                                                        |
 
 ---
 
@@ -346,5 +349,25 @@ docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d --bu
 Certificates persist in the `caddy_data` volume across restarts. Rebuild web whenever a
 `NEXT_PUBLIC_*` value (including the domain in `NEXT_PUBLIC_API_URL`) changes.
 
-> Prefer nginx + certbot? It reaches the same result but you maintain the cert-renewal timer
-> yourself. Caddy is recommended here purely for the smaller, self-renewing setup.
+### nginx + certbot variant (instead of Caddy)
+
+Prefer nginx? `docker-compose.nginx.yml` is a drop-in alternative to the Caddy overlay
+above -- same two subdomains, same unpublished app ports -- using **nginx + certbot**.
+Caddy issues and renews TLS itself; with nginx you obtain the first certificate once and a
+certbot sidecar renews it (nginx reloads every 6h to pick up renewals).
+
+It reuses the same `.env` (`DOMAIN`, `ACME_EMAIL`, and the `https://...` URLs). Steps 1-5
+above (VM, firewall, Docker, `.env`, DNS) are identical; replace step 6 with:
+
+```bash
+# one-time: render nginx config + obtain the first certificate (DNS must resolve,
+# :80 must be free + internet-reachable). Prefix STAGING=1 first to dodge LE rate limits.
+./nginx/init-letsencrypt.sh
+
+# then bring the whole stack up (prod + nginx overlay)
+docker compose -f docker-compose.prod.yml -f docker-compose.nginx.yml up -d --build
+```
+
+Verify (step 7) and go-live (step 8) are the same. Redeploy: `git pull` then the same
+`up -d --build`. Certificates persist in `certbot/conf`. Caddy stays the lighter-touch
+default (fully automatic issuance + renewal); nginx is here if you prefer to run it.

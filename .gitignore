@@ -51,3 +51,7 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# nginx + certbot deploy (generated on the server at deploy time)
+/certbot/
+/nginx/conf.d/

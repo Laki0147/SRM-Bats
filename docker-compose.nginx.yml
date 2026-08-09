@@ -1,0 +1,71 @@
+# Public HTTPS layer for the production stack — nginx + certbot variant.
+#
+# Alternative to docker-compose.proxy.yml (Caddy). Fronts web + api with an
+# nginx reverse proxy and obtains/renews Let's Encrypt certificates with a
+# certbot companion, and stops publishing web/api's raw ports on the host.
+# Use it TOGETHER with docker-compose.prod.yml (this only adds/overrides — it
+# is not standalone):
+#
+#   # 1. one-time: issue certificates (DNS must resolve + :80 must be free/open)
+#   ./nginx/init-letsencrypt.sh
+#   # 2. bring the whole stack up:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.nginx.yml up -d --build
+#
+# Requires DOMAIN and ACME_EMAIL in .env and DNS A records for shop.<DOMAIN>
+# and api.<DOMAIN> pointing at this host.
+#
+# Unlike Caddy, nginx does NOT issue certs itself: certbot obtains them (the
+# init script uses standalone for the first issuance; the certbot service then
+# renews via the webroot nginx serves at /.well-known/acme-challenge/). The
+# nginx container reloads every 6h to pick up renewed certs without downtime.
+#
+# NOTE: `!reset []` actually removes the base file's published ports (Compose
+# CONCATENATES `ports` across files, so a plain `ports: []` would not). Needs
+# Docker Compose >= v2.24.4 — any current install has it.
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: srm-bats-nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      # Rendered server config (produced from nginx/app.conf.template by the
+      # init script — envsubst fills ${DOMAIN} only, leaving nginx's own $vars).
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt:ro # certs + ACME account — MUST persist
+      - ./certbot/www:/var/www/certbot:ro # ACME HTTP-01 challenge webroot
+    # Run nginx in the foreground and reload every 6h so renewed certs are
+    # picked up with no downtime. ($${!} escapes $! so Compose leaves it for sh.)
+    command: sh -c "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g 'daemon off;'"
+    networks:
+      default:
+        # Make the public hostnames resolve to nginx from INSIDE the network too,
+        # so the web container's server-side auth fetch to https://api.<DOMAIN>
+        # terminates at nginx (valid cert) -> api:3001, with no host hairpin NAT.
+        aliases:
+          - shop.${DOMAIN}
+          - api.${DOMAIN}
+
+  certbot:
+    image: certbot/certbot
+    container_name: srm-bats-certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Attempt renewal twice a day; nginx picks up new certs on its 6h reload.
+    entrypoint: sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done"
+
+  # Only nginx is reachable from the host now (80/443). The app talks over the
+  # internal compose network, so drop the public 3000/3001 mappings.
+  web:
+    ports: !reset []
+
+  api:
+    ports: !reset []
