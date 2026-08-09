@@ -32,5 +32,16 @@
     "@typescript-eslint/no-misused-promises": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "prettier/prettier": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.cjs", "*.mjs"],
+      "extends": ["plugin:@typescript-eslint/disable-type-checked"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    }
+  ]
 }
