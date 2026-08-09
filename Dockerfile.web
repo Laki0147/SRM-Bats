@@ -1,0 +1,52 @@
+# syntax=docker/dockerfile:1
+# Multi-stage build for the Next.js storefront (@srm-bats/web).
+# Produces a slim runtime from Next's standalone output.
+
+# ---- base: Node + pnpm via corepack ------------------------------------------
+FROM node:20-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN corepack enable
+WORKDIR /app
+
+# ---- deps: install the full workspace from the frozen lockfile ---------------
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+COPY apps/api/package.json          apps/api/
+COPY apps/web/package.json          apps/web/
+COPY apps/backend/package.json      apps/backend/
+COPY apps/frontend/package.json     apps/frontend/
+COPY packages/config/package.json   packages/config/
+COPY packages/database/package.json packages/database/
+COPY packages/types/package.json    packages/types/
+COPY packages/ui/package.json       packages/ui/
+RUN pnpm install --frozen-lockfile
+
+# ---- build: next build (standalone) -----------------------------------------
+# NEXT_PUBLIC_* are inlined at build time, so they must arrive as build args.
+FROM deps AS build
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_RAZORPAY_KEY_ID
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_RAZORPAY_KEY_ID=$NEXT_PUBLIC_RAZORPAY_KEY_ID
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY . .
+# Web transpiles @srm-bats/ui and @srm-bats/types from source and does not
+# import @srm-bats/database, so no Prisma generate / dep prebuild is needed.
+# Runs the web package's own build (prebuild gen-dev-docs + next build).
+RUN pnpm --filter @srm-bats/web build
+
+# ---- runtime: serve the standalone Next server ------------------------------
+FROM base AS runtime
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+# Bind all interfaces (default is localhost, which is unreachable in a container).
+ENV HOSTNAME=0.0.0.0
+WORKDIR /app
+# Standalone output in a monorepo nests the server under apps/web/.
+COPY --from=build /app/apps/web/.next/standalone ./
+COPY --from=build /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=build /app/apps/web/public ./apps/web/public
+EXPOSE 3000
+CMD ["node", "apps/web/server.js"]

@@ -1,0 +1,48 @@
+# syntax=docker/dockerfile:1
+# Multi-stage build for the NestJS API (@srm-bats/api).
+# Debian-slim base (glibc) so Prisma's default engine works without musl binaryTargets.
+
+# ---- base: Node + pnpm via corepack ------------------------------------------
+FROM node:20-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN corepack enable
+WORKDIR /app
+
+# ---- deps: install the full workspace from the frozen lockfile ---------------
+# Copy only manifests first so this layer is cached until dependencies change.
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+# pnpm needs every workspace package.json present to resolve the graph.
+COPY apps/api/package.json          apps/api/
+COPY apps/web/package.json          apps/web/
+COPY apps/backend/package.json      apps/backend/
+COPY apps/frontend/package.json     apps/frontend/
+COPY packages/config/package.json   packages/config/
+COPY packages/database/package.json packages/database/
+COPY packages/types/package.json    packages/types/
+COPY packages/ui/package.json       packages/ui/
+RUN pnpm install --frozen-lockfile
+
+# ---- build: generate Prisma client, build the DB package + the API ----------
+# This stage keeps the Prisma CLI + tsx + prisma/ and is reused by the
+# one-shot "migrate" service in docker-compose.prod.yml (target: build).
+FROM deps AS build
+COPY . .
+# Prisma client is NOT auto-generated (no postinstall hook) — do it explicitly.
+RUN pnpm --filter @srm-bats/database db:generate
+# Build the shared DB package (tsc -> dist) then the API (nest build -> dist).
+RUN pnpm --filter @srm-bats/database build \
+ && pnpm --filter @srm-bats/api build
+
+# ---- runtime: run the compiled API ------------------------------------------
+FROM base AS runtime
+ENV NODE_ENV=production
+# Bring the whole built workspace: prod deps, the generated Prisma client
+# (node_modules/.prisma/client) and packages/database/dist all resolve as-is.
+COPY --from=build /app /app
+WORKDIR /app/apps/api
+EXPOSE 3001
+# process.cwd() == /app/apps/api, so uploads resolve to /app/apps/api/uploads
+# (mounted as a named volume). PORT is supplied at runtime (defaults to 3001).
+CMD ["node", "dist/main"]
