@@ -1,0 +1,54 @@
+# Public HTTPS layer for the production stack.
+#
+# Layers a Caddy reverse proxy (automatic Let's Encrypt TLS) in front of web +
+# api, and stops publishing their raw ports on the host. Use it TOGETHER with
+# docker-compose.prod.yml (this file only adds/overrides — it is not standalone):
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d --build
+#
+# Requires DOMAIN and ACME_EMAIL in .env, and DNS A records for shop.<DOMAIN>
+# and api.<DOMAIN> pointing at this host (see DEPLOYMENT.md).
+#
+# NOTE: the `!reset []` tags below actually remove the base file's published
+# ports (Compose CONCATENATES `ports` across files, so a plain `ports: []` would
+# not). `!reset` needs Docker Compose >= v2.24.4 — any current install has it.
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: srm-bats-caddy
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp' # HTTP/3 (QUIC)
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # certificates + ACME account — MUST persist
+      - caddy_config:/config
+    networks:
+      default:
+        # Make the public hostnames resolve to Caddy from INSIDE the network too,
+        # so the web container's server-side auth fetch to https://api.<DOMAIN>
+        # terminates at Caddy (valid cert) → api:3001, with no host hairpin NAT.
+        aliases:
+          - shop.${DOMAIN}
+          - api.${DOMAIN}
+
+  # Only Caddy is reachable from the host now (80/443). The app talks over the
+  # internal compose network, so drop the public 3000/3001 mappings.
+  web:
+    ports: !reset []
+
+  api:
+    ports: !reset []
+
+volumes:
+  caddy_data:
+  caddy_config:

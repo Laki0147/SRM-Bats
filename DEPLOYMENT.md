@@ -42,6 +42,8 @@ root `packageManager` field.
 | `.env.example`                   | Documents **every** runtime and build variable. Copy to `.env` and fill in.                                                                                                                             |
 | `apps/web/next.config.js`        | `output: 'standalone'` + `outputFileTracingRoot` for monorepo dep tracing; derives the `next/image` host from `NEXT_PUBLIC_API_URL` for `/uploads` images.                                              |
 | `packages/database/package.json` | Adds `db:deploy` (`prisma migrate deploy`) used by the `migrate` service.                                                                                                                               |
+| `docker-compose.proxy.yml`       | Optional overlay for **public HTTPS**: adds a Caddy reverse proxy (80/443, automatic TLS) and stops publishing the raw 3000/3001 ports. See _Public HTTPS deployment_ below.                            |
+| `Caddyfile`                      | Caddy config for the proxy overlay — routes `shop.<domain>` → web and `api.<domain>` → api, with automatic Let's Encrypt certificates.                                                                  |
 
 ---
 
@@ -176,9 +178,10 @@ docker compose -f docker-compose.prod.yml cp api:/app/apps/api/uploads ./uploads
 | web     | 3000      | `3000`            |
 | api     | 3001      | `3001`            |
 
-The API's port is published because both the browser (for auth) and `next/image` (for
-`/uploads/*` images) need `api` to be publicly reachable. No reverse proxy / TLS is included
-in this round — put nginx/Caddy in front and terminate TLS when you add a domain.
+These raw ports apply when you run **`docker-compose.prod.yml` alone** (no TLS): the browser
+reaches `api` directly on `3001` for auth and `/uploads/*` images. To serve the site publicly
+over HTTPS on a domain, add the Caddy overlay — the app ports are then closed and only 80/443
+are exposed. See **Public HTTPS deployment on Oracle Cloud Always Free** below.
 
 ---
 
@@ -197,3 +200,151 @@ in this round — put nginx/Caddy in front and terminate TLS when you add a doma
   attached (`docker volume ls`) and that you didn't run `down -v`.
 - **CORS errors in the console** — `FRONTEND_URL` must equal the exact origin the browser
   uses for the storefront.
+
+---
+
+## 🌍 Public HTTPS deployment on Oracle Cloud Always Free
+
+This puts the site on the public internet **for free**, with a real domain and automatic
+HTTPS, using an always-on VM. It reuses the stack above and adds one overlay file
+(`docker-compose.proxy.yml`) that fronts web + api with **Caddy** — a reverse proxy that
+obtains and auto-renews Let's Encrypt certificates with no certbot/cron to babysit.
+
+```
+Internet ──► VM public IP (only 80 + 443 open)
+                  │
+           caddy  (publishes 80/443 · automatic TLS)
+            ├── shop.<domain> ─► web:3000
+            └── api.<domain>  ─► api:3001   (also /uploads/*)
+                  │  (internal compose network — web/api ports NOT published)
+           web ─ api ─ postgres ─ migrate     (docker-compose.prod.yml, unchanged)
+                          │
+                volumes: postgres_data · uploads_data · caddy_data · caddy_config
+```
+
+Two subdomains are used (not path prefixes) because the API mounts routes at the root
+(`/auth`, `/products`, `/uploads`). The VM is **ARM (Ampere)** — every image here
+(`node:20-bookworm-slim`, `postgres:16-alpine`, Prisma, Next standalone) is multi-arch, so
+it builds and runs natively; **build on the VM**, not on an x86 laptop.
+
+### 1. Create the VM
+
+Oracle Cloud → **Compute → Instances → Create**:
+
+- **Shape:** `VM.Standard.A1.Flex` (Ampere) — e.g. **2 OCPU / 12 GB** (Always Free allows up
+  to 4 OCPU / 24 GB total; ≥2 OCPU / 12 GB makes the Next build comfortable).
+- **Image:** Ubuntu 22.04 (aarch64). Save the SSH key. Note the **public IP**.
+- _If you hit "Out of host capacity"_ (common for Always-Free ARM in busy regions): retry, or
+  pick another Availability Domain / region. Don't fall back to the AMD micro — 1 GB RAM is
+  too small for the web build.
+
+### 2. Open the firewall — **two layers** (the classic Oracle gotcha)
+
+1. **Cloud (VCN):** the subnet's **Security List** (or an NSG) → add **Ingress** rules for TCP
+   **80** and **443** from `0.0.0.0/0`. SSH (22) is already open. Do **not** open 3000/3001.
+2. **OS (iptables):** Oracle's Ubuntu image ships restrictive rules. Open 80/443 and persist:
+   ```bash
+   sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+   sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+   sudo netfilter-persistent save
+   ```
+   (Or, if you prefer ufw: `sudo ufw allow 22,80,443/tcp`.)
+
+### 3. Install Docker + clone
+
+```bash
+curl -fsSL https://get.docker.com | sh          # Docker Engine + Compose plugin
+sudo usermod -aG docker "$USER" && exit          # re-login so the group applies
+# ...ssh back in...
+git clone <your-repo-url> srm-bats && cd srm-bats
+git checkout feature/docker-deployment
+```
+
+### 4. Configure `.env` for HTTPS
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env`: set strong secrets (`POSTGRES_PASSWORD`, `JWT_SECRET`, `JWT_REFRESH_SECRET`,
+`NEXTAUTH_SECRET`, `ADMIN_PASSWORD`), the `RAZORPAY_*`, then set the public-HTTPS values:
+
+| Variable              | Value (use your real domain)                  |
+| --------------------- | --------------------------------------------- |
+| `DOMAIN`              | `yourdomain.com`                              |
+| `ACME_EMAIL`          | your email (for Let's Encrypt)                |
+| `FRONTEND_URL`        | `https://shop.yourdomain.com`                 |
+| `NEXTAUTH_URL`        | `https://shop.yourdomain.com`                 |
+| `NEXT_PUBLIC_API_URL` | `https://api.yourdomain.com` (baked at build) |
+
+> Write **full literal URLs** for `FRONTEND_URL` / `NEXTAUTH_URL` / `NEXT_PUBLIC_API_URL` —
+> values loaded via `env_file` are not variable-expanded, so `${DOMAIN}` would be passed
+> through verbatim. Only `DOMAIN` and `ACME_EMAIL` are interpolated (into the caddy service
+> and its network aliases in `docker-compose.proxy.yml`).
+>
+> `NEXT_PUBLIC_API_URL` is **baked into the web image at build time** — set it correctly
+> before building, and rebuild web if it ever changes (see Operations).
+
+### 5. DNS
+
+At your DNS provider, add **A records** to the VM's public IP (add **AAAA** too if the VM has
+an IPv6 address):
+
+| Host            | Type | Value        |
+| --------------- | ---- | ------------ |
+| `shop.<domain>` | A    | VM public IP |
+| `api.<domain>`  | A    | VM public IP |
+
+Wait for propagation and confirm before requesting certificates: `dig +short shop.<domain>`.
+
+### 6. Bring it up (TLS is automatic)
+
+```bash
+docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d --build
+```
+
+Startup order: postgres → migrate (exits 0) → api → web → **caddy**, which then obtains
+certificates for both subdomains on first request. **DNS must resolve and 80/443 must be
+reachable first**, or issuance fails. Watch it:
+
+```bash
+docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml logs -f caddy
+docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml ps
+```
+
+> The overlay uses the `!reset []` YAML tag to drop web/api's published ports (Compose
+> _concatenates_ `ports` across files, so a plain empty list would not remove them). This
+> needs Docker Compose ≥ v2.24.4 — any current install has it.
+
+### 7. Verify (HTTPS, end to end)
+
+1. `curl https://api.<domain>/health` → `{"status":"ok"}` with a **valid cert** (no `-k`).
+2. `https://shop.<domain>` loads over HTTPS; log in as the seeded admin → server-side auth
+   works (validates the Caddy network-alias path + `NEXTAUTH_*`).
+3. In `/admin`, upload a product image → it serves from `https://api.<domain>/uploads/…` and
+   renders via `next/image`.
+4. `… down && … up -d` (volumes kept) → product + image survive.
+5. No CORS or mixed-content warnings in the console.
+
+### 8. Go-live checklist
+
+- **Razorpay:** the template ships `rzp_test_*`. For real payments switch to **live** keys in
+  `.env` (`RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET` server-side; `NEXT_PUBLIC_RAZORPAY_KEY_ID`
+  is a build arg → **rebuild web**). Point any Razorpay **webhook** at `https://api.<domain>/…`.
+- **Admin password:** change `ADMIN_PASSWORD` off any placeholder.
+- **Backups:** schedule the `pg_dump` + uploads copy from _Data & persistence_ above (cron).
+- **Restart on reboot:** `restart: unless-stopped` handles containers; `sudo systemctl enable
+docker` ensures Docker itself starts on boot.
+
+### Redeploy (HTTPS stack)
+
+```bash
+git pull
+docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d --build
+```
+
+Certificates persist in the `caddy_data` volume across restarts. Rebuild web whenever a
+`NEXT_PUBLIC_*` value (including the domain in `NEXT_PUBLIC_API_URL`) changes.
+
+> Prefer nginx + certbot? It reaches the same result but you maintain the cert-renewal timer
+> yourself. Caddy is recommended here purely for the smaller, self-renewing setup.

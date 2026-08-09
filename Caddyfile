@@ -1,0 +1,22 @@
+# SRM Bats — reverse proxy with automatic HTTPS (Let's Encrypt).
+#
+# Used only with the production stack via the proxy override:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d --build
+#
+# {$DOMAIN} and {$ACME_EMAIL} are read from the caddy container's environment,
+# which docker-compose.proxy.yml populates from the repo-root .env (DOMAIN,
+# ACME_EMAIL). Caddy provisions and auto-renews certificates for both hostnames.
+
+{
+	email {$ACME_EMAIL}
+}
+
+# Storefront (Next.js standalone server).
+shop.{$DOMAIN} {
+	reverse_proxy web:3000
+}
+
+# API (NestJS) — also serves product images under /uploads/*.
+api.{$DOMAIN} {
+	reverse_proxy api:3001
+}
