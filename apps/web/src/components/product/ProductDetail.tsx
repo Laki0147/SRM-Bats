@@ -107,7 +107,10 @@ export function ProductDetail({ product, paletteIndex = 0 }: Props) {
       <div className="mx-auto max-w-[1200px] px-6 py-10 lg:px-12 lg:py-16">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
           {/* ── Left: Gallery ────────────────────────────────────── */}
-          <div className="sticky top-24">
+          {/* Sticky only from lg up — on mobile the single-column layout
+              must scroll normally, or the full-width image pins to the top
+              and the details scroll underneath it. */}
+          <div className="lg:sticky lg:top-24">
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               animate={{ opacity: 1, x: 0 }}
