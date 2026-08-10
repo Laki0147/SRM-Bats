@@ -8,13 +8,14 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-promises, @typescript-eslint/no-floating-promises */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { SiteNavbar } from '@/components/landing/SiteNavbar';
 import { SiteFooter } from '@/components/landing/SiteFooter';
+import { LoginModal } from '@/components/layout/login-modal';
 import { useCartStore } from '@/lib/cart-store';
 import { useAuthStore } from '@/lib/auth-store';
 
@@ -23,6 +24,7 @@ export default function CartPage() {
   const { items, localItems, summary, isLoading, fetchCart, updateItem, removeItem } =
     useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const [loginOpen, setLoginOpen] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) fetchCart();
@@ -228,13 +230,13 @@ export default function CartPage() {
                       <p className="mb-3 font-body text-[12px]" style={{ color: '#a09588' }}>
                         Please sign in to checkout
                       </p>
-                      <Link
-                        href="#"
-                        className="block w-full rounded-[8px] py-3 text-center font-body text-[13px] font-semibold transition-all"
+                      <button
+                        onClick={() => setLoginOpen(true)}
+                        className="block w-full rounded-[8px] py-3 text-center font-body text-[13px] font-semibold transition-all hover:opacity-90"
                         style={{ background: '#8b5e3c', color: '#f2ebe0' }}
                       >
                         Sign In to Checkout
-                      </Link>
+                      </button>
                     </div>
                   ) : (
                     <button
@@ -260,6 +262,7 @@ export default function CartPage() {
         </div>
       </main>
       <SiteFooter />
+      <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
     </div>
   );
 }
