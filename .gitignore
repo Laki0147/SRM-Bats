@@ -43,6 +43,10 @@ docs/CREDENTIALS.local.md
 *.secrets.md
 secrets/
 
+# Deployment data clone — a pg_dump of the live/local DB (may contain PII) plus
+# uploaded product images. Copied to the server by hand, NEVER committed.
+deploy/seed-data/
+
 # Vercel
 .vercel
 
