@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
+import { NavigationProgress } from '@/components/ui/NavigationProgress';
 import { CricketBallCursor } from '@/components/ui/CricketBallCursor';
 import { VariantSwitcher } from '@/components/VariantSwitcher';
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} font-sans antialiased`}>
         <CricketBallCursor />
+        <NavigationProgress />
         <ScrollProgressBar />
         <Providers>
           {children}
