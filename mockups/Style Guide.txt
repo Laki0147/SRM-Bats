@@ -1,0 +1,663 @@
+SRM Bats Design System v1.0
+Design Language
+
+Style
+
+Luxury × Sports × Premium Craftsmanship
+
+Keywords
+
+Premium
+Clean
+Bold
+Elegant
+Fast
+Handcrafted
+Performance
+Professional
+Color Palette
+Primary
+Name	HEX	Usage
+Midnight Black	#0D0D0D	Main background
+Rich Black	#151515	Cards
+Charcoal	#222222	Secondary background
+Accent
+Name	HEX	Usage
+Championship Gold	#C89B58	Primary brand color
+Dark Gold	#A57A3D	Hover
+Light Gold	#E8D2A8	Borders
+Neutral
+Name	HEX
+White	#FFFFFF
+Warm White	#F8F6F3
+Soft Gray	#E6E6E6
+Medium Gray	#8B8B8B
+Dark Gray	#4A4A4A
+Status Colors
+
+Success
+
+#3DBE6C
+
+Warning
+
+#F6B73C
+
+Danger
+
+#E04A4A
+
+Info
+
+#338DFF
+Typography
+Headings
+
+Primary
+
+Canela
+
+Fallback
+
+Playfair Display
+Body
+Inter
+Numbers
+Space Grotesk
+Typography Scale
+Usage	Size	Weight
+Hero H1	72px	700
+H2	56px	700
+H3	42px	600
+H4	32px	600
+H5	24px	600
+Body Large	20px	400
+Body	16px	400
+Small	14px	400
+Caption	12px	400
+Border Radius
+
+Cards
+
+20px
+
+Buttons
+
+14px
+
+Inputs
+
+12px
+
+Badges
+
+999px
+Shadow System
+
+Primary
+
+0 20px 50px rgba(0,0,0,.18)
+
+Hover
+
+0 30px 70px rgba(0,0,0,.28)
+
+Floating
+
+0 50px 100px rgba(0,0,0,.35)
+Grid
+
+Desktop
+
+12 Columns
+
+80px Margin
+
+24px Gutter
+
+Tablet
+
+8 Columns
+
+Mobile
+
+4 Columns
+Spacing System
+4
+
+8
+
+12
+
+16
+
+24
+
+32
+
+40
+
+48
+
+64
+
+80
+
+120
+
+160
+Buttons
+Primary
+
+Background
+
+Gold
+
+Text
+
+White
+
+Hover
+
+Dark Gold
+
+Shadow
+
+Large
+
+Padding
+
+16 × 30
+Secondary
+
+Transparent
+
+Gold Border
+
+Gold Text
+
+Hover
+
+Filled Gold
+
+Ghost
+
+Transparent
+
+White Text
+
+Navigation
+
+Height
+
+84px
+
+Sticky
+
+Glass Morphism
+
+Blur
+
+20px
+
+Border Bottom
+
+1px rgba(255,255,255,.08)
+Hero Section
+
+Height
+
+100vh
+
+Layout
+
+Left
+
+Content
+
+Right
+
+Bat Image
+
+Background
+
+Dark Cricket Stadium
+
+Hero Image
+
+Size
+
+700px
+
+Rotation
+
+-15°
+
+Shadow
+
+Large
+
+Cards
+
+Product Card
+
+Width
+
+320px
+
+Radius
+
+20px
+
+Padding
+
+20px
+
+Hover
+
+Lift
+
+Scale
+
+1.03
+
+Shadow
+
+Large
+
+Product Card Layout
+Badge
+
+Wishlist
+
+Image
+
+Rating
+
+Title
+
+Specifications
+
+Price
+
+CTA
+Icons
+
+Library
+
+Lucide
+
+Size
+
+20px
+
+24px
+
+32px
+
+Stroke
+
+1.75
+Inputs
+
+Height
+
+56px
+
+Radius
+
+12px
+
+Border
+
+#E2E2E2
+
+Focus
+
+Gold Border
+
+Footer
+
+Background
+
+#0A0A0A
+
+Padding
+
+120px
+Animations
+GSAP
+
+Hero Bat
+
+Float
+
+Rotate
+
+Mouse Tilt
+
+Cards
+
+Fade Up
+
+Stagger
+
+0.15s
+
+Images
+
+Zoom
+
+1.1
+
+0.4 sec
+
+Buttons
+
+Magnetic
+
+Glow
+
+Navigation
+
+Blur
+
+Shrink
+Icons Used
+Search
+
+Wishlist
+
+Cart
+
+User
+
+Arrow
+
+Location
+
+Phone
+
+Mail
+
+Truck
+
+Award
+
+Shield
+
+Bat
+
+Star
+
+Calendar
+
+Chevron
+
+Play
+
+Heart
+
+Share
+
+Components
+Navigation
+
+Logo
+
+Mega Menu
+
+Search
+
+Wishlist
+
+Account
+
+Cart
+
+Hero
+
+Headline
+
+Description
+
+2 CTA Buttons
+
+Statistics
+
+Background Stadium
+
+Bat Image
+
+Feature Strip
+
+Professional Players
+
+50,000+ Orders
+
+18 Years
+
+Rating
+
+Collection Cards
+
+English Willow
+
+Kashmir Willow
+
+Players Edition
+
+Junior
+
+Women's
+
+Product Grid
+
+Product Card
+
+Price
+
+Rating
+
+Stock
+
+Wishlist
+
+Cart
+
+Craftsmanship Timeline
+
+Willow
+
+↓
+
+Handcraft
+
+↓
+
+Balance
+
+↓
+
+Knocking
+
+↓
+
+Ready
+
+Testimonials
+
+Customer Photo
+
+Stars
+
+Review
+
+Country
+
+Purchased Product
+
+Newsletter
+
+Email
+
+Subscribe
+
+Footer
+
+Links
+
+Payment
+
+Social
+
+Trust Badges
+
+Figma File Structure
+📁 SRM Bats
+
+    📁 Cover
+
+    📁 Design System
+
+        Colors
+
+        Typography
+
+        Shadows
+
+        Radius
+
+        Grid
+
+        Icons
+
+        Buttons
+
+        Inputs
+
+        Cards
+
+        Components
+
+    📁 Wireframes
+
+        Home
+
+        Collection
+
+        Product
+
+        Cart
+
+        Checkout
+
+        About
+
+        Contact
+
+    📁 High Fidelity
+
+        Home Desktop
+
+        Home Tablet
+
+        Home Mobile
+
+        Product Desktop
+
+        Product Mobile
+
+        Collection
+
+        Checkout
+
+    📁 Components
+
+        Navbar
+
+        Hero
+
+        Product Card
+
+        Review Card
+
+        CTA
+
+        Footer
+
+        Accordion
+
+        FAQ
+
+        Filters
+
+        Pagination
+
+        Breadcrumb
+
+        Modal
+
+        Badge
+
+        Rating
+
+    📁 Assets
+
+        Logo
+
+        Icons
+
+        Backgrounds
+
+        Bat Images
+
+        Textures
+
+Recommended Auto Layout Settings
+Component	Auto Layout
+Navbar	Horizontal, Space Between
+Hero	Horizontal, Fill Container
+Cards	Vertical
+Footer Columns	Horizontal
+Product Grid	Grid (5 desktop, 2 tablet, 1 mobile)
+Buttons	Hug Contents
+Forms	Vertical
+Background Assets Used
+
+The generated concept uses AI-created artwork, so there are no extractable layered source files for the backgrounds. They are rendered as part of the image rather than separate assets. For a production-quality design, I recommend recreating them as editable assets.
+
+Hero Background
+Night cricket stadium with floodlights
+Black-to-transparent vignette
+Gold dust particles
+Soft fog layer
+Ground texture with subtle reflections
+Bat shadow on the pitch
+
+Recommended layer order:
+
+Background
+├── Stadium silhouette
+├── Floodlights
+├── Atmospheric fog
+├── Gold particle overlay
+├── Pitch texture
+├── Shadow gradient
+└── Vignette
+Section Backgrounds
+Best Sellers: Warm off-white (#F8F6F3)
+Craftsmanship: Dark wood texture with black overlay
+Testimonials: White with subtle noise (2–3%)
+Newsletter: Black with gold particle overlay and cricket ball highlight
+Footer: Solid black with a faint gold top glow
+Textures
+
+Use high-resolution (4K or higher) textures for:
+
+English willow wood grain
+Black leather
+Matte paper noise
+Gold metallic foil
+Soft smoke/fog
+Cricket stadium lighting

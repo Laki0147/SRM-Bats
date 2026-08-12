@@ -1,0 +1,373 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   SRM BATS — HERITAGE DARK DESIGN SYSTEM
+   ========================================== */
+
+/* Cormorant Garamond (display) + Cormorant SC (small-caps) + DM Mono (mono/stat).
+   Body=Inter is loaded via next/font in layout.tsx. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Cormorant+SC:wght@500;600;700&family=DM+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Brand colour tokens */
+  --soil:        #2c1f14;
+  --bark:        #3d2b1f;
+  --clay:        #5c3d2e;
+  --terracotta:  #8b5e3c;
+  --sand:        #c4956a;
+  --linen:       #e8d9c4;
+  --parchment:   #f2ebe0;
+  --stone:       #6b6358;
+  --ash:         #a09588;
+  --cream:       #faf6f0;
+  --warm-white:  #f7f2ea;
+
+  /* Tailwind-compatible RGB values for dynamic opacity */
+  --color-primary: 139 94 60;    /* terracotta */
+  --color-secondary: 196 149 106; /* sand */
+  --color-accent: 107 99 88;     /* stone */
+
+  --background: 242 235 224;     /* parchment #f2ebe0 */
+  --background-secondary: 232 217 196; /* linen */
+  --foreground: 44 31 20;        /* soil */
+  --foreground-secondary: 107 99 88; /* stone */
+  --border: 232 217 196;         /* linen */
+  --shadow: 44 31 20;            /* soil */
+}
+
+/* Dark mode — warm heritage tones (never the generic cool grays) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 28 20 12;          /* soil-deep #1c140c */
+    --background-secondary: 44 31 20; /* soil #2c1f14 */
+    --foreground: 232 217 196;       /* linen */
+    --foreground-secondary: 160 149 136; /* ash */
+    --border: 61 43 31;              /* bark */
+  }
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+@layer base {
+  body {
+    @apply bg-[#f2ebe0] text-[#5A5753] antialiased font-body;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    overflow-x: hidden;
+  }
+
+  /* Typography Scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-[#2A2825] font-display;
+  }
+}
+
+/* ── Smooth scrolling + scroll snap ── */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Custom cricket-ball cursor — hide native on fine pointers only ──
+   A11y: keep a real cursor on text fields so typing/selection stays usable,
+   and never hide the native cursor when the user prefers reduced motion
+   (the custom cursor is a motion effect). */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+  input, textarea, select, [contenteditable="true"] {
+    cursor: auto !important;
+  }
+  a, button, [role="button"], label, summary {
+    cursor: pointer !important;
+  }
+}
+
+/* Section reveal base — used with Framer Motion whileInView */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+/* Prevent layout shift on fixed nav */
+body {
+  overflow-x: hidden;
+}
+
+/* Smooth video rendering */
+video {
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ========================================
+   CRICKET BALL CURSOR
+   ======================================== */
+.cricket-cursor {
+  cursor: pointer;
+}
+
+/* Apply cricket cursor to interactive elements */
+a, button, input[type="button"], input[type="submit"], [role="button"] {
+  cursor: pointer;
+}
+
+/* Note: Custom SVG cursors removed to fix build errors.
+   Cricket cursor effect now handled via cricket-cursor.tsx component */
+
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Note: `.glass` (glassmorphism) and `.gradient-text` were removed during the
+   Impeccable pass — both are generic surface habits that read as AI-generated,
+   and neither is used by any live surface. Emphasis comes from weight/size and
+   the heritage palette, not gradient fills. */
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Dust particles container */
+.dust-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+/* ========================================
+   HERITAGE ATELIER COMPONENTS
+   ======================================== */
+@layer components {
+  /* Premium Button Styles */
+  .btn-primary {
+    @apply inline-flex items-center gap-3 px-8 py-4 bg-[#8b5e3c] text-[#f2ebe0] text-[16px] font-medium rounded-[6px];
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+    box-shadow: 0 6px 16px rgba(139, 94, 60, 0.22);
+  }
+
+  /* Lift only, no scale — scale-on-hover is a tell; a settled surface reads more premium. */
+  .btn-primary:hover {
+    box-shadow: 0 10px 24px rgba(139, 94, 60, 0.28);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(139, 94, 60, 0.2);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-3 px-8 py-4 border-2 border-[#c4956a] text-[#c4956a] text-[16px] font-medium rounded-[6px] transition-all;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-[#8b5e3c] text-[#f2ebe0] border-[#8b5e3c];
+  }
+
+  /* Card Styles */
+  .card-premium {
+    @apply bg-[#FAF8F5] rounded-lg p-10;
+    border: 1px solid rgba(139, 94, 60, 0.14);
+    box-shadow: 0 8px 32px rgba(20, 12, 6, 0.14);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-premium:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(20, 12, 6, 0.28);
+    border-color: rgba(196, 149, 106, 0.3);
+  }
+
+  /* Container Styles */
+  .container-premium {
+    @apply container mx-auto px-8 lg:px-20;
+    max-width: 1400px;
+  }
+
+  /* Section Spacing */
+  .section-spacing {
+    @apply py-32 lg:py-40;
+  }
+
+  /* Text Styles */
+  .text-eyebrow {
+    @apply text-[15px] uppercase tracking-[0.1em] font-medium;
+  }
+
+  .text-display-xl {
+    @apply font-display text-[56px] lg:text-[72px] font-bold leading-[1.1] tracking-[-0.02em];
+  }
+
+  .text-display-lg {
+    @apply font-display text-[42px] lg:text-[48px] font-semibold leading-[1.2] tracking-[-0.01em];
+  }
+
+  .text-display-md {
+    @apply font-display text-[28px] lg:text-[32px] font-semibold leading-[1.3];
+  }
+
+  .text-body-lg {
+    @apply text-[20px] lg:text-[22px] leading-[1.6];
+  }
+
+  .text-body {
+    @apply text-[16px] lg:text-[18px] leading-[1.7];
+  }
+
+  .text-body-sm {
+    @apply text-[14px] lg:text-[15px] leading-[1.6];
+  }
+}
+
+@layer utilities {
+  /* Custom shadows */
+  .shadow-elevated {
+    box-shadow: 0 20px 60px rgba(20, 12, 6, 0.32), 0 8px 24px rgba(20, 12, 6, 0.18);
+  }
+
+  .shadow-subtle {
+    box-shadow: 0 4px 16px rgba(20, 12, 6, 0.14);
+  }
+
+  .shadow-hover {
+    box-shadow: 0 28px 80px rgba(20, 12, 6, 0.4), 0 12px 32px rgba(20, 12, 6, 0.24);
+  }
+
+  /* GPU-accelerated animations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Focus styles */
+  .focus-premium:focus-visible {
+    @apply outline-none ring-2 ring-[#c4956a] ring-offset-2 ring-offset-[#2c1f14];
+  }
+}
+
+/* ========================================
+   WILLOW-GRAIN SIGNATURE
+   The page's one material motif — faint vertical wood-grain, the way it
+   runs the length of a bat. Used sparingly: major section seams + one panel.
+   ======================================== */
+
+/* Section seam — faint vertical grain ticks, softly masked top & bottom so it
+   reads as a textured hairline rather than a hard rule. Two overlaid periods
+   (14px / 28px) keep the spacing from looking mechanical. */
+.willow-seam {
+  height: 12px;
+  width: 100%;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(196, 149, 106, 0.16) 13px 14px),
+    repeating-linear-gradient(90deg, transparent 0 27px, rgba(217, 173, 130, 0.09) 27px 28px);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 50%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 50%, transparent 100%);
+}
+
+/* Panel grain — a whisper of vertical grain for one surface (the craft panel). */
+.willow-grain {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 5px,
+    rgba(196, 149, 106, 0.045) 5px 6px,
+    transparent 6px 11px,
+    rgba(196, 149, 106, 0.022) 11px 12px
+  );
+}
+
+/* Custom selection colors */
+::selection {
+  background-color: rgba(196, 149, 106, 0.28);
+  color: #2c1f14;
+}
+
+::-moz-selection {
+  background-color: rgba(196, 149, 106, 0.28);
+  color: #2c1f14;
+}
+
+/* Smooth font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent layout shift */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus — gold ring reads on the warm dark theme */
+a:focus-visible,
+button:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #c4956a;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

@@ -1,0 +1,748 @@
+You are a Senior Solution Architect, UX Designer, Full Stack Developer, Product Manager, and Digital Marketing Expert.
+
+Your task is to design and build a premium, production-ready e-commerce website for a freelance business that manufactures and sells custom branded cricket bats online.
+
+Do not build a simple template website.
+
+The goal is to create a brand that people remember.
+
+The website should feel like a premium sports brand (Apple, Nike, Nothing, Wilson, Gray-Nicolls, SS, SG, Spartan, New Balance Cricket) with modern animations and an immersive shopping experience.
+
+Business Details
+
+Business Name
+
+SRM Bats
+
+Business Model
+
+Own Inventory
+Handmade Custom Cricket Bats
+Premium English Willow & Kashmir Willow bats
+Customers purchase directly from website
+Owner manually packs and ships orders
+No logistics API integration for now
+Admin manually updates shipment tracking information
+
+Country
+
+India
+
+Currency
+
+INR (₹)
+
+GST
+
+Should be easily configurable later.
+
+Website Goals
+
+The website should
+
+Build trust
+Feel premium
+Increase conversions
+Encourage repeat purchases
+Be SEO optimized
+Mobile First
+Extremely fast
+Production ready
+Target Audience
+Cricket Players
+Club Players
+Tennis Ball Players
+Leather Ball Players
+Parents buying bats
+Schools
+Cricket Academies
+Technology Stack (Recommended)
+
+Frontend
+
+Next.js (App Router)
+React
+TypeScript
+Tailwind CSS
+Framer Motion
+GSAP
+Three.js / React Three Fiber
+Lenis Smooth Scroll
+
+Backend
+
+Node.js
+NestJS or Express
+PostgreSQL
+Prisma ORM
+
+Authentication
+
+NextAuth/Auth.js
+Google Login
+Email Login
+Mobile OTP Login (Firebase OTP)
+
+Storage
+
+Cloudinary
+
+Payments
+
+Razorpay
+Stripe (future ready)
+
+Analytics
+
+Google Analytics 4
+Google Tag Manager
+Microsoft Clarity
+Meta Pixel
+Google Search Console
+
+SEO
+
+Dynamic Sitemap
+robots.txt
+Open Graph
+Twitter Cards
+Schema.org Product Schema
+Breadcrumb Schema
+FAQ Schema
+
+Deployment
+
+Vercel
+Railway / Render
+Docker support
+Pages Required
+Home
+
+Premium Hero Section
+
+Fullscreen cinematic video
+Professional cricketer playing a cover drive using SRM Bat
+Slow motion
+Dust particles
+Stadium lighting
+Crowd ambience
+Bat close-up
+Dynamic camera movement
+
+Overlay Text
+
+"Crafted for Champions."
+
+"Handmade Premium Cricket Bats"
+
+CTA
+
+Shop Now
+Explore Collection
+
+Sections
+
+Featured Products
+Best Sellers
+New Arrivals
+Why Choose SRM
+Bat Making Process
+Reviews
+Instagram Gallery
+Cricket Tips Blog
+FAQ
+Newsletter
+Footer
+Products Page
+
+Filters
+
+Willow Type
+Weight
+Price
+Grade
+Handle Type
+Availability
+
+Sorting
+
+Newest
+Popular
+Price Low-High
+Price High-Low
+
+Search
+
+Pagination
+
+Wishlist
+
+Compare
+
+Quick View
+
+Product Details
+
+Large Image Gallery
+
+360° Product View
+
+Zoom
+
+AI-generated lifestyle images
+
+Product Video
+
+Specifications
+
+Weight
+
+Handle
+
+Willow
+
+Sweet Spot
+
+Profile
+
+Pickup
+
+Edge Thickness
+
+Spine Height
+
+Customer Reviews
+
+Related Products
+
+Frequently Bought Together
+
+Delivery Estimate
+
+Availability
+
+Cart
+
+Animated Cart
+
+Coupon Code
+
+Gift Note
+
+Order Summary
+
+Tax
+
+Shipping
+
+Checkout Button
+
+Checkout
+
+Login or Guest Checkout
+
+Address
+
+Phone
+
+Payment
+
+Order Review
+
+Terms
+
+Place Order
+
+Order Success
+
+Beautiful Success Animation
+
+Order Number
+
+Invoice Download
+
+Track Order
+
+Continue Shopping
+
+Order Tracking
+
+Customer enters
+
+Order Number
+
+Phone Number
+
+Shows
+
+Status
+
+Packed
+
+Shipped
+
+Delivered
+
+Admin updates manually.
+
+About Us
+
+Story
+
+Vision
+
+Craftsmanship
+
+Workshop
+
+Founder
+
+Gallery
+
+Contact
+
+Google Map
+
+Email
+
+Phone
+
+WhatsApp
+
+Business Hours
+
+Contact Form
+
+FAQ
+
+Accordion
+
+Search
+
+Privacy Policy
+Refund Policy
+Shipping Policy
+Terms & Conditions
+Blog
+
+SEO Friendly
+
+Categories
+
+Tags
+
+Reading Time
+
+Related Articles
+
+Admin Dashboard
+
+Login
+
+Dashboard
+
+Orders
+
+Products
+
+Customers
+
+Coupons
+
+Inventory
+
+Reviews
+
+Analytics
+
+Settings
+
+Admin can
+
+Add Products
+
+Edit Products
+
+Delete Products
+
+Upload Images
+
+Upload Videos
+
+Manage Orders
+
+Update Shipping
+
+Generate Coupons
+
+View Analytics
+
+Approve Reviews
+
+Manage Inventory
+
+Authentication
+
+Email Login
+
+Google Login
+
+Mobile OTP Login
+
+Forgot Password
+
+Email Verification
+
+Profile Page
+
+Order History
+
+Wishlist
+
+Saved Addresses
+
+Payment Gateway
+
+Integrate
+
+Razorpay
+
+Support
+
+UPI
+
+Cards
+
+Net Banking
+
+Wallets
+
+COD (optional)
+
+Payment Success
+
+Payment Failure
+
+Refund Ready
+
+Coupons
+
+Create Coupon
+
+Percentage
+
+Flat Discount
+
+Expiry
+
+Usage Limit
+
+Minimum Order
+
+First User Coupon
+
+Automatically generate
+
+WELCOME10
+
+10% OFF
+
+First Registered User
+
+First Purchase Only
+
+Birthday Coupon (future ready)
+
+Festival Coupons
+
+Referral Coupons
+
+Reviews
+
+Only verified buyers can review.
+
+Features
+
+Star Rating
+
+Review
+
+Images
+
+Helpful Votes
+
+Admin Approval
+
+Inventory
+
+Stock Count
+
+Low Stock Alerts
+
+Out of Stock
+
+Hide Products Automatically
+
+Analytics
+
+Google Analytics 4
+
+Google Tag Manager
+
+Microsoft Clarity
+
+Meta Pixel
+
+Events
+
+View Product
+
+Add to Cart
+
+Remove Cart
+
+Checkout
+
+Purchase
+
+Coupon Applied
+
+Search
+
+Login
+
+Register
+
+Wishlist
+
+Scroll Depth
+
+Heatmaps
+
+Notifications
+
+Order Confirmation Email
+
+Shipping Email
+
+Delivery Email
+
+Admin New Order Email
+
+SMS Ready
+
+WhatsApp Ready
+
+Performance
+
+95+ Lighthouse Score
+
+Image Optimization
+
+Lazy Loading
+
+Code Splitting
+
+SSR
+
+SEO Optimized
+
+Accessibility WCAG AA
+
+Security
+
+HTTPS
+
+JWT
+
+Rate Limiting
+
+Input Validation
+
+Helmet
+
+CSRF Protection
+
+Sanitization
+
+Password Hashing
+
+Secure Cookies
+
+UI / UX
+
+This should NOT look like a standard Shopify template.
+
+The experience should be unique, memorable, and premium.
+
+Use smooth animations throughout the site.
+
+Premium Interactions
+Cursor
+
+Replace the default cursor with an animated cricket ball.
+
+Spins while moving
+Squashes on click
+Leaves a subtle motion trail
+Loading Screen
+
+Animated cricket bat.
+
+The bat gradually fills with wood texture.
+
+A cricket ball strikes the bat.
+
+The bat plays a cover drive.
+
+Transition into homepage.
+
+Hero Section
+
+Interactive cinematic background.
+
+Player swings bat.
+
+Mouse movement creates subtle parallax.
+
+Floating dust particles.
+
+Light rays.
+
+Slow-motion replay effect.
+
+Product Cards
+
+Hover
+
+Lift
+
+Shadow
+
+Glow
+
+3D Tilt
+
+Quick Add Animation
+
+Buttons
+
+Magnetic hover
+
+Ripple effect
+
+Spring animations
+
+Cart
+
+Flying bat animation into cart
+
+Mini celebration animation
+
+Checkout Success
+
+Confetti
+
+Bat swing animation
+
+Fireworks
+
+Order badge
+
+Micro Interactions
+
+Page transitions
+
+Smooth scrolling
+
+Animated counters
+
+Number rolling
+
+Hover sounds (optional)
+
+Glass morphism
+
+Floating cards
+
+Gradient borders
+
+Animated SVGs
+
+AI Generated Assets
+
+Since no real media exists yet, generate professional placeholders.
+
+Create
+
+Premium cricket bat product renders
+Hero banner images
+Lifestyle photos
+Cricket stadium backgrounds
+Workshop images
+Bat manufacturing images
+Promotional banners
+Product videos
+360° product renders
+Icons
+Illustrations
+Loading animations
+
+The generated assets should look realistic enough for an investor demo or client presentation.
+
+Database Design
+
+Design a scalable relational schema including:
+
+Users
+Roles
+Products
+Categories
+Inventory
+Orders
+Order Items
+Payments
+Coupons
+Reviews
+Addresses
+Wishlist
+Cart
+Sessions
+Analytics Events
+
+Provide Prisma schema and ER diagram.
+
+Deliverables
+
+Generate the project as if it will be deployed to production.
+
+Include:
+
+Complete folder structure.
+Database schema.
+API architecture.
+Authentication flow.
+UI/UX design system.
+Design tokens.
+Color palette.
+Typography.
+Component library.
+Responsive layouts.
+Admin dashboard.
+Customer dashboard.
+SEO implementation.
+Analytics implementation.
+Payment integration.
+Coupon engine.
+Review system.
+Order workflow.
+Deployment guide.
+Docker configuration.
+CI/CD pipeline.
+Testing strategy (Unit, Integration, E2E).
+AI-generated media prompts.
+Performance optimization strategy.
+Security best practices.
+Future roadmap (delivery partner integration, inventory forecasting, CRM, loyalty program, PWA, multilingual support).
+
+Important: Build this as a real-world, production-grade e-commerce application with clean architecture, reusable components, scalable code, comprehensive documentation, and a premium, memorable user experience—not a generic demo or template. Every design and engineering decision should prioritize performance, maintainability, conversion optimization, accessibility, and future scalability.
