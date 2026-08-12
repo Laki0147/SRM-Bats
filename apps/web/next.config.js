@@ -49,36 +49,26 @@ const nextConfig = {
   // Enable compression
   compress: true,
 
-  // Configure headers for caching
+  // Configure headers for caching.
+  //
+  // In development these paths keep STABLE filenames (e.g. webpack.js,
+  // main-app.js) but their CONTENT changes on every rebuild. An `immutable`
+  // year-long cache therefore poisons dev: the browser AND the Cloudflare edge
+  // (this domain is served through a cloudflared tunnel, so it is always
+  // proxied) keep serving the previous build's chunks. A rebuilt RSC payload
+  // then references module ids the stale webpack runtime never registered →
+  // `options.factory` is undefined → `.call` on undefined → the hydration
+  // crash. So only send the long immutable cache in production (where chunk
+  // filenames are content-hashed and safe to cache forever); in dev send
+  // `no-store` so no cache layer holds a chunk across rebuilds.
   async headers() {
+    const isProd = process.env.NODE_ENV === 'production';
+    const cacheValue = isProd ? 'public, max-age=31536000, immutable' : 'no-store, must-revalidate';
+    const cacheHeaders = [{ key: 'Cache-Control', value: cacheValue }];
     return [
-      {
-        source: '/images/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/fonts/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
+      { source: '/images/:path*', headers: cacheHeaders },
+      { source: '/fonts/:path*', headers: cacheHeaders },
+      { source: '/_next/static/:path*', headers: cacheHeaders },
     ];
   },
 
