@@ -139,9 +139,51 @@ database tools installed) to write `deploy/seed-data/db.sql`, and copies `apps/a
 
 ## Part 4 — Step B: Get the project onto the server
 
-Pick **one** of the two options below.
+Getting the project onto the server is **two things**: (B1) the **code**, and (B2) your **local
+data**. Do them in order — the data step is separate on purpose, because git never carries the data.
 
-### Option 1 — Copy the whole folder from Windows (simplest for keeping your data)
+### The repository
+
+- **Git URL:** `https://github.com/Laki0147/SRM-Bats.git`
+- **Branch with all the current work:** `feature/impeccable-redesign-2026-07-26`
+
+**Why this matters:** the full app (storefront + cart/checkout/payments + admin CMS), the redesign,
+and these deploy scripts all live on the **`feature/impeccable-redesign-2026-07-26`** branch — not on
+`master`. Always check out that branch, or you'll get older code.
+
+---
+
+### Step B1 — Get the code onto the server
+
+Pick **one** option.
+
+**Option A — Clone from GitHub (recommended; gives you clean, updatable code):**
+
+```bash
+# On the server:
+cd /mnt
+git clone https://github.com/Laki0147/SRM-Bats.git srm-bats
+cd srm-bats
+git checkout feature/impeccable-redesign-2026-07-26
+```
+
+**Why we do this:** `git clone` downloads the project; `git checkout` switches to the branch that
+actually contains all your work.
+**What it does:** creates `/mnt/srm-bats` with the full source on the correct branch.
+
+**Already cloned it before and just want the latest changes?** Pull instead of cloning again:
+
+```bash
+cd /mnt/srm-bats
+git checkout feature/impeccable-redesign-2026-07-26
+git pull origin feature/impeccable-redesign-2026-07-26
+```
+
+**Why we do this:** `git pull` fetches and applies any new commits I've pushed since your last copy.
+**What it does:** updates the code in place — your `.env` and `deploy/seed-data/` are untouched
+(they're gitignored, so pull never overwrites them).
+
+**Option B — Copy the whole folder from Windows (carries your data in one move):**
 
 Use WinSCP (a graphical file-copy app) or `scp` from PowerShell to copy the entire project —
 **including `deploy/seed-data/`** — to the server.
@@ -151,30 +193,37 @@ Use WinSCP (a graphical file-copy app) or `scp` from PowerShell to copy the enti
 scp -r C:\new-project user@your-server:/mnt/srm-bats
 ```
 
-**Why we do this:** copying the folder directly carries the gitignored `deploy/seed-data/` along
-with everything else, so your local data arrives on the server in one move.
-
+**Why we do this:** copying the folder directly also carries the gitignored `deploy/seed-data/`, so
+the code **and** your data arrive together — you can skip Step B2 below.
 **What it does:** transfers the project files over SSH into `/mnt/srm-bats` on the server.
 
-### Option 2 — Clone from git on the server, then copy the data separately
+---
 
-```bash
-# On the server:
-cd /mnt
-git clone <your-repo-url> srm-bats
-```
+### Step B2 — Bring your local data across (git does NOT include it)
 
-Then, **from your Windows PC**, copy only the data bundle across (because git didn't include it):
+**This step is required only if you cloned in Option A** (Option B already brought the data along).
+
+Your real data is **not in the git repository** — it is deliberately gitignored, so it is never
+uploaded to GitHub and never comes down with a `git clone`/`git pull`. You must **request/transfer it
+by hand**. This is:
+
+- `deploy/seed-data/db.sql` + `deploy/seed-data/uploads/` — the database dump + product images you
+  created in [Part 3](#part-3--step-a-capture-your-local-data-on-your-windows-pc)
+- (secrets like `.env` are generated fresh on the server by `setup.sh`, so you don't copy those)
+
+From your **Windows PC**, copy only the data bundle onto the server:
 
 ```powershell
 scp -r C:\new-project\deploy\seed-data user@your-server:/mnt/srm-bats/deploy/
 ```
 
-**Why we do this:** `git clone` gives you the latest code cleanly, but `deploy/seed-data/` is
-gitignored and will be **missing** — so we copy it in as a second step.
+**Why we do this:** `setup.sh` looks for `deploy/seed-data/db.sql`; if it's there, it restores your
+exact local database + images instead of generating a generic demo catalog.
+**What it does:** places your data bundle at `/mnt/srm-bats/deploy/seed-data/` so the next step can
+restore it.
 
-**What it does:** the clone downloads the source; the `scp` fills in the one folder git left out.
-(Skip the second command entirely if you want fresh seed data rather than your local data.)
+> **Don't want your local data?** Skip Step B2 entirely. With no `deploy/seed-data/db.sql` present,
+> `setup.sh` automatically seeds a fresh demo catalog instead.
 
 ---
 
