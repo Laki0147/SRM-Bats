@@ -117,7 +117,11 @@ else
   set_env ADMIN_PASSWORD       "$(openssl rand -hex 12)"
   set_env FRONTEND_URL         "http://${SERVER_IP}:3000"
   set_env NEXTAUTH_URL         "http://${SERVER_IP}:3000"
-  set_env NEXT_PUBLIC_API_URL  "http://${SERVER_IP}:3001"
+  # Relative on purpose: the browser reaches the API through the web app's own
+  # origin (/backend/* -> api:3001, see apps/web/next.config.js). One build then
+  # works on localhost, the LAN IP and any public domain, and the api container
+  # never needs publishing. Do NOT set this to an absolute host.
+  set_env NEXT_PUBLIC_API_URL  "/backend"
 
   chmod 600 .env
   ok ".env created (server IP: ${SERVER_IP}). Secrets are random; see the file to view them."
@@ -180,10 +184,12 @@ if [ "$DATA_MODE" = "clone" ]; then
   # --no-deps => do NOT run migrate/seed over cloned data (would overwrite edits)
   $DC up -d --no-deps api || warn "compose reported an error starting api — verification below will re-check."
 
-  # wait for API health before copying uploads into its volume
+  # wait for API health before copying uploads into its volume.
+  # Probed from INSIDE the container: the API port is intentionally not
+  # published, and web (which proxies it) may not be up yet at this point.
   api_ok=0
   for _ in $(seq 1 40); do
-    if curl -fsS "http://127.0.0.1:3001/health" >/dev/null 2>&1; then api_ok=1; break; fi
+    if $DC exec -T api node -e "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" >/dev/null 2>&1; then api_ok=1; break; fi
     sleep 3
   done
   [ "$api_ok" = "1" ] || warn "API not healthy yet — continuing; verification below will re-check."
@@ -209,9 +215,10 @@ fi
 # =============================================================================
 say "Verifying services…"
 
+# The API is not published on the host, so probe it inside its container.
 api_ok=0
 for _ in $(seq 1 40); do
-  if curl -fsS "http://127.0.0.1:3001/health" 2>/dev/null | grep -q '"status":"ok"'; then api_ok=1; break; fi
+  if $DC exec -T api node -e "fetch('http://127.0.0.1:3001/health').then(r=>r.json()).then(j=>process.exit(j.status==='ok'?0:1)).catch(()=>process.exit(1))" >/dev/null 2>&1; then api_ok=1; break; fi
   sleep 3
 done
 
@@ -222,17 +229,27 @@ for _ in $(seq 1 40); do
   sleep 3
 done
 
+# The browser only ever reaches the API through the web origin, so verify that
+# proxy path explicitly — web and api can both be healthy while it is broken.
+proxy_ok=0
+for _ in $(seq 1 20); do
+  if curl -fsS "http://127.0.0.1:3000/backend/health" 2>/dev/null | grep -q '"status":"ok"'; then proxy_ok=1; break; fi
+  sleep 3
+done
+
 echo
 $DC ps
 echo
 SERVER_IP="$(detect_ip)"
 
-if [ "$api_ok" = "1" ]; then ok "API healthy  → http://127.0.0.1:3001/health"; else warn "API health check FAILED. Logs: $DC logs api"; fi
-if [ "$web_ok" = "1" ]; then ok "Web serving  → http://127.0.0.1:3000/";      else warn "Web check FAILED. Logs: $DC logs web"; fi
+if [ "$api_ok" = "1" ];   then ok "API healthy  → in-container /health";                 else warn "API health check FAILED. Logs: $DC logs api"; fi
+if [ "$web_ok" = "1" ];   then ok "Web serving  → http://127.0.0.1:3000/";               else warn "Web check FAILED. Logs: $DC logs web"; fi
+if [ "$proxy_ok" = "1" ]; then ok "API proxy    → http://127.0.0.1:3000/backend/health"; else warn "Same-origin API proxy FAILED — the site will load but login/products will not work. Logs: $DC logs web"; fi
 
 echo
-say "Reachable ON THIS SERVER:  http://127.0.0.1:3000  (web)   http://127.0.0.1:3001  (api)"
-say "When you open the firewall later, also at:  http://${SERVER_IP}:3000  and  :3001"
+say "Reachable ON THIS SERVER:  http://127.0.0.1:3000  (web; the API is proxied at /backend)"
+say "Also at:  http://${SERVER_IP}:3000  — and through any domain you point at port 3000."
+say "The api container is NOT published; nothing needs to reach port 3001 from outside."
 echo
 if [ "$DATA_MODE" = "clone" ]; then
   say "Data: cloned from your local machine. Log in with your EXISTING local admin credentials."
@@ -243,14 +260,16 @@ fi
 echo
 cat <<'NOTE'
 Open external access (only when you want the site reachable off-box):
-  sudo firewall-cmd --add-port=3000/tcp --add-port=3001/tcp --permanent
+  # Only port 3000 — the API is proxied through it and is never exposed.
+  sudo firewall-cmd --add-port=3000/tcp --permanent   # RHEL/Oracle Linux
   sudo firewall-cmd --reload
-  # On Oracle Cloud (OCI) also add ingress for TCP 3000 & 3001 in the VCN Security List / NSG.
+  sudo ufw allow 3000/tcp                            # Ubuntu/Debian
+  # On Oracle Cloud (OCI) also add ingress for TCP 3000 in the VCN Security List / NSG.
 
 Fresh start (wipe DB + uploads, reseed clean):   ./reset.sh
 NOTE
 
-if [ "$api_ok" = "1" ] && [ "$web_ok" = "1" ]; then
+if [ "$api_ok" = "1" ] && [ "$web_ok" = "1" ] && [ "$proxy_ok" = "1" ]; then
   ok "All services are up and verified."
 else
   die "One or more services failed verification — see the logs hints above."

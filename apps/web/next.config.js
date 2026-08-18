@@ -1,8 +1,21 @@
 const path = require('path');
 
-// Derive the API host (for next/image) from the public API URL so images the
-// API serves at /uploads/* render through next/image on the storefront.
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// The browser reaches the API through this app's own origin (see rewrites()
+// below), so NEXT_PUBLIC_API_URL is a RELATIVE path like `/backend`. That keeps
+// one image working on every hostname — localhost, the LAN IP and the public
+// domain — instead of baking one host in at build time, and it means the API
+// never has to be published or reachable cross-origin.
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/backend';
+
+// Where the Next server (not the browser) forwards proxied API calls. This is
+// the compose service name on the private Docker network. Baked into the
+// routes-manifest at build time, so it must be set at build time if overridden.
+const apiInternalUrl = process.env.API_INTERNAL_URL || 'http://api:3001';
+
+// next/image only needs a remotePattern for ABSOLUTE image URLs. With the
+// relative default, API-served /uploads/* images arrive same-origin as
+// /backend/uploads/* and are treated as local, so no pattern is needed — the
+// URL() call below throws and leaves this null, which is the expected path.
 let apiImagePattern = null;
 try {
   const u = new URL(apiUrl);
@@ -85,8 +98,22 @@ const nextConfig = {
     ];
   },
 
+  // Same-origin API proxy. The browser calls /backend/* on whatever host it
+  // loaded from, and the Next server forwards to the api container over the
+  // private Docker network. This is what makes the app work identically on
+  // localhost, the LAN IP and the public domain:
+  //   - no CORS      (never a cross-origin request)
+  //   - no mixed content (an HTTPS page never calls http://)
+  //   - no Private Network Access block (no public origin -> 192.168.x call)
+  // and it lets the api container stay unpublished entirely.
+  // /backend/uploads/* is covered by the same rule, which is how product
+  // images served by the API resolve (see resolveImageUrl in lib/api.ts).
+  async rewrites() {
+    return [{ source: '/backend/:path*', destination: `${apiInternalUrl}/:path*` }];
+  },
+
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+    NEXT_PUBLIC_API_URL: apiUrl,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
   },
 };

@@ -50,8 +50,13 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
-    ports:
-      - '3001:3001'
+    # Deliberately NOT published. The API is reachable only from the web
+    # container on this compose network, proxied same-origin via /backend/*
+    # (see rewrites() in apps/web/next.config.js). Publishing it would put an
+    # unauthenticated, plaintext HTTP surface on the host — and it is not
+    # needed, since no browser talks to it directly.
+    expose:
+      - '3001'
     volumes:
       - uploads_data:/app/apps/api/uploads
     healthcheck:
@@ -86,6 +91,9 @@ services:
       # so the site is unreachable. `environment` overrides `env_file`, pinning
       # web to the port actually published below.
       PORT: 3000
+      # Target for the same-origin /backend/* proxy, and for server-side calls
+      # (NextAuth authorize) which cannot resolve a relative URL.
+      API_INTERNAL_URL: http://api:3001
     depends_on:
       api:
         condition: service_started

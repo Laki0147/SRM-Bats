@@ -54,9 +54,10 @@ say "Bringing the stack back up (migrate + seed run automatically)…"
 $DC up -d web || warn "compose reported an error bringing up the stack — verification below will re-check."
 
 say "Verifying…"
+# The api container is intentionally not published, so probe it from inside.
 api_ok=0
 for _ in $(seq 1 40); do
-  if curl -fsS "http://127.0.0.1:3001/health" 2>/dev/null | grep -q '"status":"ok"'; then api_ok=1; break; fi
+  if $DC exec -T api node -e "fetch('http://127.0.0.1:3001/health').then(r=>r.json()).then(j=>process.exit(j.status==='ok'?0:1)).catch(()=>process.exit(1))" >/dev/null 2>&1; then api_ok=1; break; fi
   sleep 3
 done
 web_ok=0
@@ -65,16 +66,23 @@ for _ in $(seq 1 40); do
   if [ "$code" = "200" ]; then web_ok=1; break; fi
   sleep 3
 done
+# The browser only reaches the API through the web origin — verify that path.
+proxy_ok=0
+for _ in $(seq 1 20); do
+  if curl -fsS "http://127.0.0.1:3000/backend/health" 2>/dev/null | grep -q '"status":"ok"'; then proxy_ok=1; break; fi
+  sleep 3
+done
 
 echo
 $DC ps
 echo
 ADMIN_EMAIL="$(grep -E '^ADMIN_EMAIL=' .env 2>/dev/null | cut -d= -f2- || true)"
 ADMIN_PASSWORD="$(grep -E '^ADMIN_PASSWORD=' .env 2>/dev/null | cut -d= -f2- || true)"
-[ "$api_ok" = "1" ] && ok "API healthy → http://127.0.0.1:3001/health" || warn "API not healthy — $DC logs api"
-[ "$web_ok" = "1" ] && ok "Web serving → http://127.0.0.1:3000/"      || warn "Web not serving — $DC logs web"
+[ "$api_ok" = "1" ]   && ok "API healthy → in-container /health"                  || warn "API not healthy — $DC logs api"
+[ "$web_ok" = "1" ]   && ok "Web serving → http://127.0.0.1:3000/"               || warn "Web not serving — $DC logs web"
+[ "$proxy_ok" = "1" ] && ok "API proxy   → http://127.0.0.1:3000/backend/health" || warn "Same-origin API proxy failed — $DC logs web"
 echo
 say "Clean baseline ready. Admin login →  ${ADMIN_EMAIL:-admin@srmbats.com} / ${ADMIN_PASSWORD:-<see .env>}"
 
-[ "$api_ok" = "1" ] && [ "$web_ok" = "1" ] || die "Reset finished but verification failed — check the logs above."
+[ "$api_ok" = "1" ] && [ "$web_ok" = "1" ] && [ "$proxy_ok" = "1" ] || die "Reset finished but verification failed — check the logs above."
 ok "Reset complete."
