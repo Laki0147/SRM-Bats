@@ -80,6 +80,12 @@ services:
     container_name: srm-bats-web
     restart: unless-stopped
     env_file: .env
+    environment:
+      # .env carries PORT=3001 for the API, and env_file applies it to this
+      # container too — Next.js then binds 3001 while compose publishes 3000,
+      # so the site is unreachable. `environment` overrides `env_file`, pinning
+      # web to the port actually published below.
+      PORT: 3000
     depends_on:
       api:
         condition: service_started

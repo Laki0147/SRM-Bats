@@ -4,6 +4,15 @@
 
 # ---- base: Node + pnpm via corepack ------------------------------------------
 FROM node:20-bookworm-slim AS base
+# Prisma picks its query/schema engine from the OpenSSL version it detects, but
+# bookworm-slim ships no libssl at all. Prisma then silently falls back to the
+# debian-openssl-1.1.x engines, which cannot run on Debian 12 (OpenSSL 3.x) —
+# `prisma migrate deploy` fails with a bare "Schema engine error".
+# This must be installed BEFORE `pnpm install` (the deps stage below inherits
+# from here) so the correct debian-openssl-3.0.x engines are downloaded.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openssl ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 RUN corepack enable

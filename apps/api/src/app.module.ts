@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductsModule } from './products/products.module';
@@ -31,5 +33,10 @@ import { BannersModule } from './banners/banners.module';
     CouponsModule,
     BannersModule,
   ],
+  // AppController serves GET / and GET /health. Without it registered here the
+  // health route 404s, which fails the api container's compose healthcheck and
+  // setup.sh's verification even though the API itself is up.
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

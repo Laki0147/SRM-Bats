@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
-import { Inter, Crimson_Pro } from 'next/font/google'
-import './globals.css'
-import { Providers } from './providers'
-import { WebVitalsReporter } from '@/components/WebVitalsReporter'
+import type { Metadata } from 'next';
+import { Inter, Crimson_Pro } from 'next/font/google';
+import './globals.css';
+import { Providers } from './providers';
+import { WebVitalsReporter } from '@/components/WebVitalsReporter';
 
 // Optimize Inter font - only load weights we need
 const inter = Inter({
@@ -13,7 +13,7 @@ const inter = Inter({
   fallback: ['system-ui', '-apple-system', 'sans-serif'],
   adjustFontFallback: true, // Reduce CLS
   weight: ['400', '500', '600', '700'],
-})
+});
 
 // Optimize Crimson Pro font
 const crimsonPro = Crimson_Pro({
@@ -25,11 +25,12 @@ const crimsonPro = Crimson_Pro({
   adjustFontFallback: true,
   style: ['normal', 'italic'],
   weight: ['400', '600', '700'],
-})
+});
 
-export const meta Metadata = {
+export const metadata: Metadata = {
   title: 'SRM Bats - Premium Custom Cricket Bats',
-  description: 'Shop premium custom cricket bats crafted with precision. Get 10% off your first order!',
+  description:
+    'Shop premium custom cricket bats crafted with precision. Get 10% off your first order!',
   keywords: 'cricket bats, custom cricket bats, premium bats, English willow, Kashmir willow',
   viewport: {
     width: 'device-width',
@@ -42,13 +43,9 @@ export const meta Metadata = {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
-}
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -57,12 +54,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
         {/* Preload critical hero image */}
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero/hero-stadium.svg"
-          type="image/svg+xml"
-        />
+        <link rel="preload" as="image" href="/images/hero/hero-stadium.svg" type="image/svg+xml" />
 
         {/* Inline critical CSS for above-the-fold content */}
         <style
@@ -86,5 +78,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  )
+  );
 }
